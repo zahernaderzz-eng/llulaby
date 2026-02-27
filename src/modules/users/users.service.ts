@@ -246,4 +246,11 @@ export class UsersService {
             this.authHelper.deleteAllUserDevices(identity.id),
         ]);
     }
+
+    async test() {
+        await this.userModel.create({
+            name: 'test',
+        });
+        return 'success this is server for our graduation project';
+    }
 }

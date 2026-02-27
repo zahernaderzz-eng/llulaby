@@ -12,7 +12,7 @@ export class User {
     @Prop({
         type: MongooseSchema.Types.ObjectId,
         ref: 'Identity',
-        required: true,
+        required: false,
     })
     identity: string | Identity;
 

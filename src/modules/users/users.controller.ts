@@ -21,12 +21,17 @@ import { UpdateIdentifierDto } from './dto/update-identifier.dto';
 import { GetOtherProfileDto } from './dto/get-other-profile.dto';
 
 @Controller('users')
-@UseGuards(AuthenticateGuardFactory())
 export class UsersController {
     constructor(
         private readonly usersService: UsersService,
         private readonly i18nService: I18nService,
     ) {}
+    @Get('test')
+    async test() {
+        const test = await this.usersService.test();
+
+        return ApiUtil.formatResponse(200, test);
+    }
 
     @Get('my-profile')
     async getMyProfile(@Req() request: Request) {
