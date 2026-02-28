@@ -30,7 +30,7 @@ export class UsersController {
     async test() {
         const test = await this.usersService.test();
 
-        return ApiUtil.formatResponse(200, test);
+        return test;
     }
 
     @Get('my-profile')
