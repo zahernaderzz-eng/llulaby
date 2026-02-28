@@ -251,6 +251,58 @@ export class UsersService {
         await this.userModel.create({
             name: 'test',
         });
-        return 'success this is server for our graduation project';
+
+        return `
+    <!DOCTYPE html>
+    <html lang="ar">
+    <head>
+        <meta charset="UTF-8" />
+        <title>Graduation Project Server</title>
+        <style>
+            body {
+                font-family: 'Segoe UI', Tahoma, Arial, sans-serif;
+                background: linear-gradient(135deg, #1d2671, #c33764);
+                height: 100vh;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                margin: 0;
+                direction: rtl;
+            }
+            .card {
+                background: #ffffff;
+                padding: 35px 45px;
+                border-radius: 14px;
+                box-shadow: 0 15px 40px rgba(0,0,0,0.25);
+                text-align: center;
+                max-width: 420px;
+            }
+            h1 {
+                color: #222;
+                margin-bottom: 15px;
+            }
+            p {
+                color: #555;
+                font-size: 17px;
+                margin: 8px 0;
+            }
+            .highlight {
+                margin-top: 20px;
+                font-size: 18px;
+                font-weight: bold;
+                color: #c33764;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="card">
+            <h1>🚀 السيرفر شغال</h1>
+            <p>Backend Graduation Project</p>
+            <p>كل حاجة تمام ✅</p>
+            <div class="highlight">مش تقلقوا 😎</div>
+        </div>
+    </body>
+    </html>
+    `;
     }
 }

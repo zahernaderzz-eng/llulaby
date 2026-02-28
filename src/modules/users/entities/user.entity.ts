@@ -39,4 +39,4 @@ export type UserDocument = User & Document;
 
 export const UserSchema = SchemaFactory.createForClass(User);
 
-UserSchema.index({ identity: 1 }, { unique: true });
+UserSchema.index({ identity: 1 });
