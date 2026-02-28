@@ -27,8 +27,8 @@ export class UsersController {
         private readonly i18nService: I18nService,
     ) {}
     @Get('test')
-    async test() {
-        const test = await this.usersService.test();
+    test() {
+        const test = this.usersService.test();
 
         return test;
     }

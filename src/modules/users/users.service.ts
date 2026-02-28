@@ -247,11 +247,7 @@ export class UsersService {
         ]);
     }
 
-    async test() {
-        await this.userModel.create({
-            name: 'test',
-        });
-
+    test() {
         return `
     <!DOCTYPE html>
     <html lang="ar">
