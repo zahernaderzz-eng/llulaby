@@ -7,11 +7,9 @@ import {
     Patch,
     Req,
     UploadedFile,
-    UseGuards,
     UseInterceptors,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { AuthenticateGuardFactory } from '../auth/guards/authenticate.guard';
 import { ApiUtil } from 'src/common/utils/api-util';
 import { I18nService } from 'nestjs-i18n';
 import { UpdateMyProfileDto } from './dto/update-my-profile.dto';
