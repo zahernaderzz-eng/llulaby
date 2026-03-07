@@ -25,6 +25,7 @@ import { CronModule } from './core/cron/cron.module';
 import { DashboardModule } from './modules/dashboard/dashboard.module';
 import { FirebaseModule } from './core/firebase/firebase.module';
 import { RequestLoggerMiddleware } from './common/middlewares/request-logger.middleware';
+import { AiPredictionsModule } from './modules/ai-predictions/ai-predictions.module';
 
 @Module({
     imports: [
@@ -51,6 +52,7 @@ import { RequestLoggerMiddleware } from './common/middlewares/request-logger.mid
         CronModule,
         DashboardModule,
         FirebaseModule,
+        AiPredictionsModule,
     ],
     controllers: [],
     providers: [
