@@ -26,6 +26,7 @@ import { DashboardModule } from './modules/dashboard/dashboard.module';
 import { FirebaseModule } from './core/firebase/firebase.module';
 import { RequestLoggerMiddleware } from './common/middlewares/request-logger.middleware';
 import { AiPredictionsModule } from './modules/ai-predictions/ai-predictions.module';
+import { ChildrenModule } from './modules/children/children.module';
 
 @Module({
     imports: [
@@ -53,6 +54,7 @@ import { AiPredictionsModule } from './modules/ai-predictions/ai-predictions.mod
         DashboardModule,
         FirebaseModule,
         AiPredictionsModule,
+        ChildrenModule,
     ],
     controllers: [],
     providers: [

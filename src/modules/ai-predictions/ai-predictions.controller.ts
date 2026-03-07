@@ -1,17 +1,21 @@
-import { Controller, Post, UploadedFile, UseInterceptors, BadRequestException } from '@nestjs/common';
+import { Controller, Post, UploadedFile, UseInterceptors, BadRequestException, UseGuards, Req } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { AiPredictionsService } from './ai-predictions.service';
+import { AuthenticateGuardFactory } from '../auth/guards/authenticate.guard';
 
 @Controller('ai-predictions')
 export class AiPredictionsController {
     constructor(private readonly aiPredictionsService: AiPredictionsService) { }
-
+    @UseGuards(AuthenticateGuardFactory())
     @Post('predict')
     @UseInterceptors(FileInterceptor('file'))
-    async predict(@UploadedFile() file: Express.Multer.File) {
+    async predict(@UploadedFile() file: Express.Multer.File, @Req() req: Request) {
         if (!file) {
             throw new BadRequestException('No file uploaded');
         }
+
+        const userId = req['user']['id'];
+        console.log(userId);
 
         // Check mimetype to ensure it's a wav file
         // Note: Some clients might send 'audio/x-wav' or 'audio/wave'
@@ -20,6 +24,6 @@ export class AiPredictionsController {
             throw new BadRequestException('Only .wav files are allowed');
         }
 
-        return this.aiPredictionsService.predict(file);
+        return this.aiPredictionsService.predict(file, userId);
     }
 }
