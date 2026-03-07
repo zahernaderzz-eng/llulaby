@@ -9,6 +9,8 @@ import ffmpeg from 'fluent-ffmpeg';
 const ffmpegPath = require('ffmpeg-static');
 
 import { PassThrough } from 'stream';
+import * as fs from 'fs';
+import * as path from 'path';
 
 ffmpeg.setFfmpegPath(ffmpegPath);
 
@@ -42,10 +44,26 @@ export class AiPredictionsService {
         });
     }
 
+    private async saveFileLocally(buffer: Buffer, filename: string): Promise<string> {
+        const uploadDir = path.join(process.cwd(), 'uploads', 'ai-debug');
+        if (!fs.existsSync(uploadDir)) {
+            fs.mkdirSync(uploadDir, { recursive: true });
+        }
+        const filePath = path.join(uploadDir, filename);
+        fs.writeFileSync(filePath, buffer);
+        console.log(`Audio saved locally at: ${filePath}`);
+        return filePath;
+    }
+
     async predict(file: Express.Multer.File, userId: string) {
         try {
             // تحويل الصوت إلى wav
             const wavBuffer = await this.convertToWav(file.buffer);
+
+            // حفظ الملف محلياً للتجربة
+            const timestamp = new Date().getTime();
+            const debugFilename = `debug_${userId}_${timestamp}.wav`;
+            await this.saveFileLocally(wavBuffer, debugFilename);
 
             const formData = new FormData();
             formData.append('file', wavBuffer, {
