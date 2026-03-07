@@ -5,11 +5,12 @@ import { firstValueFrom } from 'rxjs';
 import FormData from 'form-data';
 import { ChildrenService } from '../children/children.service';
 
-import * as ffmpeg from 'fluent-ffmpeg';
-import ffmpegPath from 'ffmpeg-static';
+import ffmpeg from 'fluent-ffmpeg';
+const ffmpegPath = require('ffmpeg-static');
+
 import { PassThrough } from 'stream';
 
-ffmpeg.setFfmpegPath(ffmpegPath as string);
+ffmpeg.setFfmpegPath(ffmpegPath);
 
 @Injectable()
 export class AiPredictionsService {
