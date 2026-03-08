@@ -4,16 +4,16 @@ import { CountryDocument } from 'src/modules/countries/entities/country.entity';
 
 @Injectable()
 export class ReturnObject {
-    constructor(private readonly sharedVariables: SharedVariables) {}
+    constructor(private readonly sharedVariables: SharedVariables) { }
 
     getUserAvatar(avatar: string | null) {
         return avatar === '' || avatar === null
             ? this.sharedVariables.ADDRESS +
-                  this.sharedVariables.USER_AVATAR_IMAGES +
-                  'default.png'
+            this.sharedVariables.USER_AVATAR_IMAGES +
+            'default.png'
             : avatar.startsWith('https')
-              ? avatar
-              : this.sharedVariables.ADDRESS +
+                ? avatar
+                : this.sharedVariables.ADDRESS +
                 this.sharedVariables.USER_AVATAR_IMAGES +
                 avatar;
     }
@@ -21,11 +21,11 @@ export class ReturnObject {
     getAdminAvatar(avatar: string | null) {
         return avatar === '' || avatar === null
             ? this.sharedVariables.ADDRESS +
-                  this.sharedVariables.ADMIN_AVATAR_IMAGES +
-                  'default.png'
+            this.sharedVariables.ADMIN_AVATAR_IMAGES +
+            'default.png'
             : avatar.startsWith('https')
-              ? avatar
-              : this.sharedVariables.ADDRESS +
+                ? avatar
+                : this.sharedVariables.ADDRESS +
                 this.sharedVariables.ADMIN_AVATAR_IMAGES +
                 avatar;
     }
@@ -90,6 +90,33 @@ export class ReturnObject {
             isSuperAdmin: identity.isSuperAdmin,
             role: this.role(identity.role),
             avatar: this.getAdminAvatar(admin.avatar),
+        };
+    }
+
+    getChildAvatar(avatar: string | null) {
+        return avatar === '' || avatar === null
+            ? this.sharedVariables.ADDRESS +
+            this.sharedVariables.CHILDREN_AVATAR_IMAGES +
+            'default.png'
+            : avatar.startsWith('https')
+                ? avatar
+                : this.sharedVariables.ADDRESS +
+                this.sharedVariables.CHILDREN_AVATAR_IMAGES +
+                avatar;
+    }
+
+    child(child: any) {
+        if (!child) return null;
+        return {
+            id: child._id,
+            name: child.name,
+            dateBirth: child.dateBirth,
+            gender: child.gender,
+            avatar: this.getChildAvatar(child.avatar),
+            height: child.height || null,
+            weight: child.weight || null,
+            bloodType: child.bloodType || null,
+            predictions: child.predictions || [],
         };
     }
 }
