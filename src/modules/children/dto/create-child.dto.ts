@@ -8,6 +8,7 @@ import {
     IsOptional,
     IsNumber,
 } from 'class-validator';
+import { Type } from 'class-transformer';
 
 export class CreateChildDto {
     @MaxLength(20, { message: 'messages.invalidNameLength' })
@@ -28,10 +29,12 @@ export class CreateChildDto {
     avatar?: string;
 
     @IsOptional()
+    @Type(() => Number)
     @IsNumber({}, { message: 'messages.invalidHeight' })
     height?: number;
 
     @IsOptional()
+    @Type(() => Number)
     @IsNumber({}, { message: 'messages.invalidWeight' })
     weight?: number;
 
