@@ -111,5 +111,8 @@
     "genderRequired": "Gender is required.",
     "invalidGender": "Gender is invalid.",
     "dateBirthRequired": "Date of birth is required.",
-    "invalidDateBirth": "Date of birth is invalid."
+    "invalidDateBirth": "Date of birth is invalid.",
+    "invalidHeight": "Height must be a number.",
+    "invalidWeight": "Weight must be a number.",
+    "invalidBloodType": "Blood type must be a string."
 }

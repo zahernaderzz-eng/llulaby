@@ -111,5 +111,8 @@
     "genderRequired": "الجنس مطلوب.",
     "invalidGender": "الجنس غير صالح.",
     "dateBirthRequired": "تاريخ الميلاد مطلوب.",
-    "invalidDateBirth": "تاريخ الميلاد غير صالح."
+    "invalidDateBirth": "تاريخ الميلاد غير صالح.",
+    "invalidHeight": "يجب أن يكون الطول رقماً.",
+    "invalidWeight": "يجب أن يكون الوزن رقماً.",
+    "invalidBloodType": "يجب أن يكون فصيلة الدم نصاً."
 }

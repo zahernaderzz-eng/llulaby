@@ -5,7 +5,7 @@ import { memoryStorage, MulterError } from 'multer';
 const options: MulterOptions = {
     storage: memoryStorage(),
     fileFilter: (req, file, cb) => {
-        if (!file.mimetype.match(/\/(jpg|jpeg|png)$/)) {
+        if (!file.mimetype.match(/\/(jpg|jpeg|png|webp)$/)) {
             return cb(new MulterError('LIMIT_UNEXPECTED_FILE'), false);
         }
         cb(null, true);

@@ -3,7 +3,7 @@ import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class SharedVariables {
-    constructor(private readonly configService: ConfigService) {}
+    constructor(private readonly configService: ConfigService) { }
 
     get ADDRESS(): string {
         const env = this.configService.get<string>('NODE_ENV');
@@ -30,6 +30,10 @@ export class SharedVariables {
 
     get COMMUNITY_AVATAR_IMAGES(): string {
         return '/uploads/communities/avatars/';
+    }
+
+    get CHILDREN_AVATAR_IMAGES(): string {
+        return '/uploads/children/avatars/';
     }
 
     get ADMIN_PERMISSIONS() {

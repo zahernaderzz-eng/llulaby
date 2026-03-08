@@ -38,6 +38,18 @@ export class Child {
 
     @Prop({ type: [PredictionRecord], default: [] })
     predictions: PredictionRecord[];
+
+    @Prop()
+    avatar?: string;
+
+    @Prop()
+    height?: number;
+
+    @Prop()
+    weight?: number;
+
+    @Prop()
+    bloodType?: string;
 }
 
 export type ChildDocument = Child & Document;

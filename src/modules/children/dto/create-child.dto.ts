@@ -5,6 +5,8 @@ import {
     MaxLength,
     MinLength,
     IsDateString,
+    IsOptional,
+    IsNumber,
 } from 'class-validator';
 
 export class CreateChildDto {
@@ -21,4 +23,19 @@ export class CreateChildDto {
     @IsEnum(['male', 'female'], { message: 'messages.invalidGender' })
     @IsNotEmpty({ message: 'messages.genderRequired' })
     gender: string;
+
+    @IsOptional()
+    avatar?: string;
+
+    @IsOptional()
+    @IsNumber({}, { message: 'messages.invalidHeight' })
+    height?: number;
+
+    @IsOptional()
+    @IsNumber({}, { message: 'messages.invalidWeight' })
+    weight?: number;
+
+    @IsOptional()
+    @IsString({ message: 'messages.invalidBloodType' })
+    bloodType?: string;
 }
