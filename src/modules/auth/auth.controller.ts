@@ -19,6 +19,7 @@ import { AuthenticateGuardFactory } from './guards/authenticate.guard';
 import { ResetPasswordDto } from './dto/reset-password';
 import { ForgotPasswordDto } from './dto/forgot-password.dto';
 import { VerifyForgotPasswordDto } from './dto/verify-forgot-password.dto';
+import { ChangePasswordDto } from './dto/change-password.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -100,6 +101,18 @@ export class AuthController {
         return ApiUtil.formatResponse(
             200,
             this.i18nService.t('messages.passwordResetSuccess'),
+            {},
+        );
+    }
+
+    @Post('change-password')
+    @UseGuards(AuthenticateGuardFactory())
+    async changePassword(@Req() request: Request, @Body() data: ChangePasswordDto) {
+        await this.authService.changePassword(request['user']['id'], data);
+
+        return ApiUtil.formatResponse(
+            200,
+            this.i18nService.t('messages.passwordUpdated'),
             {},
         );
     }

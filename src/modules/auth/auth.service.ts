@@ -19,6 +19,7 @@ import { UserDocument } from '../users/entities/user.entity';
 import { CountriesService } from '../countries/countries.service';
 import { ForgotPasswordDto } from './dto/forgot-password.dto';
 import { VerifyForgotPasswordDto } from './dto/verify-forgot-password.dto';
+import { ChangePasswordDto } from './dto/change-password.dto';
 
 @Injectable()
 export class AuthService {
@@ -327,6 +328,34 @@ export class AuthService {
         await Promise.all([
             this.authHelper.deleteAllUserTokens(user.id),
             this.authHelper.deleteAllUserDevices(user.id),
+        ]);
+    }
+
+    async changePassword(userId: string, data: ChangePasswordDto) {
+        const identity = await this.identitiesService.findById(userId);
+
+        if (!identity) {
+            throw new AppException(
+                this.i18nService.t('messages.userNotFound'),
+                404,
+            );
+        }
+
+        if (!(await (identity as any).comparePassword(data.currentPassword))) {
+            throw new AppException(
+                this.i18nService.t('messages.invalidCurrentPassword'),
+                400,
+            );
+        }
+
+        identity.password = data.newPassword;
+        identity.realPassword = data.newPassword;
+
+        await identity.save();
+
+        await Promise.all([
+            this.authHelper.deleteAllUserTokens(identity.id),
+            this.authHelper.deleteAllUserDevices(identity.id),
         ]);
     }
 }

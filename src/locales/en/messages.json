@@ -114,5 +114,6 @@
     "invalidDateBirth": "Date of birth is invalid.",
     "invalidHeight": "Height must be a number.",
     "invalidWeight": "Weight must be a number.",
-    "invalidBloodType": "Blood type must be a string."
+    "invalidBloodType": "Blood type must be a string.",
+    "invalidCurrentPassword": "The current password you entered is incorrect."
 }

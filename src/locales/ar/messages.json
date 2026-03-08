@@ -114,5 +114,6 @@
     "invalidDateBirth": "تاريخ الميلاد غير صالح.",
     "invalidHeight": "يجب أن يكون الطول رقماً.",
     "invalidWeight": "يجب أن يكون الوزن رقماً.",
-    "invalidBloodType": "يجب أن يكون فصيلة الدم نصاً."
+    "invalidBloodType": "يجب أن يكون فصيلة الدم نصاً.",
+    "invalidCurrentPassword": "كلمة المرور الحالية التي أدخلتها غير صحيحة."
 }
