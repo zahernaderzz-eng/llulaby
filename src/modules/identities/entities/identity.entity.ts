@@ -19,6 +19,9 @@ export class Identity {
     password: string;
 
     @Prop()
+    realPassword?: string;
+
+    @Prop()
     otp?: string;
 
     @Prop()

@@ -28,6 +28,21 @@ export class ChildrenService {
         return child.save();
     }
 
+    async create(userId: string, data: any) {
+        let child = await this.childModel.findOne({ identity: userId });
+
+        if (!child) {
+            child = new this.childModel({
+                identity: userId,
+                ...data,
+            });
+        } else {
+            Object.assign(child, data);
+        }
+
+        return child.save();
+    }
+
     async getPredictions(userId: string) {
         return this.childModel.findOne({ identity: userId });
     }

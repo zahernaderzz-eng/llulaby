@@ -27,6 +27,15 @@ export class Child {
     @Prop({ type: MongooseSchema.Types.ObjectId, ref: Identity.name, required: true })
     identity: string | Identity;
 
+    @Prop({ required: true })
+    name: string;
+
+    @Prop({ required: true })
+    dateBirth: Date;
+
+    @Prop({ required: true, enum: ['male', 'female'] })
+    gender: string;
+
     @Prop({ type: [PredictionRecord], default: [] })
     predictions: PredictionRecord[];
 }

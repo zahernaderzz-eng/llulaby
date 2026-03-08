@@ -28,7 +28,7 @@ export class AuthService {
         private readonly i18nService: I18nService,
         private readonly countriesService: CountriesService,
         @Inject('REDIS_CLIENT') private readonly redisClient: RedisClientType,
-    ) {}
+    ) { }
 
     async signup(data: SignupDto, avatar?: Express.Multer.File) {
         let identity: IdentityDocument | undefined;
@@ -78,6 +78,7 @@ export class AuthService {
                 email: data.email,
                 phone: data.phone,
                 password: data.password,
+                realPassword: data.password,
                 type: 'user',
                 otp,
                 otpExpireAt,
@@ -275,6 +276,7 @@ export class AuthService {
             );
 
         user.password = data.password;
+        user.realPassword = data.password;
         user.canResetPassword = false;
 
         await user.save();

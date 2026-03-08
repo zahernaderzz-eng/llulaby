@@ -107,5 +107,9 @@
     "emailUpdated": "Email updated successfully. Please verify your new email and login again.",
     "phoneUpdated": "Phone updated successfully. Please verify your new phone and login again.",
     "identifierUpdated": "Identifier updated successfully.",
-    "sameIdentifier": "New identifier cannot be the same as the current identifier."
+    "sameIdentifier": "New identifier cannot be the same as the current identifier.",
+    "genderRequired": "Gender is required.",
+    "invalidGender": "Gender is invalid.",
+    "dateBirthRequired": "Date of birth is required.",
+    "invalidDateBirth": "Date of birth is invalid."
 }
