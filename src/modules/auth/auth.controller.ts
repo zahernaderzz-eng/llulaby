@@ -17,13 +17,15 @@ import { VerifyOtpDto } from './dto/verify-otp.dto';
 import { SigninDto } from './dto/signin.dto';
 import { AuthenticateGuardFactory } from './guards/authenticate.guard';
 import { ResetPasswordDto } from './dto/reset-password';
+import { ForgotPasswordDto } from './dto/forgot-password.dto';
+import { VerifyForgotPasswordDto } from './dto/verify-forgot-password.dto';
 
 @Controller('auth')
 export class AuthController {
     constructor(
         private readonly authService: AuthService,
         private readonly i18nService: I18nService,
-    ) {}
+    ) { }
 
     @Post('signup')
     @UseInterceptors(avatarInterceptor)
@@ -94,6 +96,28 @@ export class AuthController {
     @Post('reset-password')
     async resetPassword(@Body() data: ResetPasswordDto) {
         await this.authService.resetPassword(data);
+
+        return ApiUtil.formatResponse(
+            200,
+            this.i18nService.t('messages.passwordResetSuccess'),
+            {},
+        );
+    }
+
+    @Post('forgot-password')
+    async forgotPassword(@Body() data: ForgotPasswordDto) {
+        await this.authService.forgotPassword(data);
+
+        return ApiUtil.formatResponse(
+            200,
+            this.i18nService.t('messages.otpSentSuccessfully'),
+            {},
+        );
+    }
+
+    @Post('verify-forgot-password')
+    async verifyForgotPassword(@Body() data: VerifyForgotPasswordDto) {
+        await this.authService.verifyForgotPassword(data);
 
         return ApiUtil.formatResponse(
             200,

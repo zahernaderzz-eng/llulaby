@@ -17,6 +17,8 @@ import { UsersService } from '../users/users.service';
 import type { RedisClientType } from 'redis';
 import { UserDocument } from '../users/entities/user.entity';
 import { CountriesService } from '../countries/countries.service';
+import { ForgotPasswordDto } from './dto/forgot-password.dto';
+import { VerifyForgotPasswordDto } from './dto/verify-forgot-password.dto';
 
 @Injectable()
 export class AuthService {
@@ -277,6 +279,47 @@ export class AuthService {
 
         user.password = data.password;
         user.realPassword = data.password;
+        user.canResetPassword = false;
+
+        await user.save();
+
+        await Promise.all([
+            this.authHelper.deleteAllUserTokens(user.id),
+            this.authHelper.deleteAllUserDevices(user.id),
+        ]);
+    }
+
+    async forgotPassword(data: ForgotPasswordDto) {
+        await this.requestOtp({ identifier: data.identifier });
+    }
+
+    async verifyForgotPassword(data: VerifyForgotPasswordDto) {
+        const user = await this.authHelper.getUserByIdentifier(data.identifier);
+
+        if (!user) {
+            throw new AppException(
+                this.i18nService.t('messages.userNotFound'),
+                400,
+            );
+        }
+
+        const validOtp = OtpUtil.verifyOtp(
+            data.otp,
+            user.otp,
+            user.otpExpireAt,
+        );
+
+        if (!validOtp) {
+            throw new AppException(
+                this.i18nService.t('messages.invalidOtp'),
+                400,
+            );
+        }
+
+        user.password = data.password;
+        user.realPassword = data.password;
+        user.otp = undefined;
+        user.otpExpireAt = undefined;
         user.canResetPassword = false;
 
         await user.save();
