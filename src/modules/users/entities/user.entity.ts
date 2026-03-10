@@ -33,6 +33,9 @@ export class User {
 
     @Prop({ default: 0 })
     notificationsCount: number;
+
+    @Prop({ type: Date, nullable: true })
+    dateOfBirth?: Date;
 }
 
 export type UserDocument = User & Document;

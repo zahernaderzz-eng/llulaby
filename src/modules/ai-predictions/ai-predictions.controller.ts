@@ -1,7 +1,13 @@
 import {
-    Controller, Post, UseInterceptors, UploadedFile,
-    UseGuards, Req, BadRequestException,
-    InternalServerErrorException, Logger,
+    Controller,
+    Post,
+    UseInterceptors,
+    UploadedFile,
+    UseGuards,
+    Req,
+    BadRequestException,
+    InternalServerErrorException,
+    Logger,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
@@ -19,7 +25,7 @@ export class AiPredictionsController {
         private readonly audioProcessor: AudioProcessorService,
         private readonly fastApiClient: FastApiClientService,
         private readonly childrenService: ChildrenService,
-    ) { }
+    ) {}
 
     @UseGuards(AuthenticateGuardFactory())
     @Post('predict')
@@ -36,9 +42,13 @@ export class AiPredictionsController {
             },
             fileFilter: (_req, file, cb) => {
                 const allowed = [
-                    'audio/wav', 'audio/wave', 'audio/x-wav',
-                    'audio/mpeg', 'audio/mp3', 'audio/mp4',
-                    'application/octet-stream' // Often used by mobile apps
+                    'audio/wav',
+                    'audio/wave',
+                    'audio/x-wav',
+                    'audio/mpeg',
+                    'audio/mp3',
+                    'audio/mp4',
+                    'application/octet-stream', // Often used by mobile apps
                 ];
                 const extension = file.originalname.toLowerCase();
                 if (
@@ -50,15 +60,17 @@ export class AiPredictionsController {
                 ) {
                     cb(null, true);
                 } else {
-                    cb(new BadRequestException(`Audio files only (.wav, .mp3, .m4a). Received: ${file.mimetype}`), false);
+                    cb(
+                        new BadRequestException(
+                            `Audio files only (.wav, .mp3, .m4a). Received: ${file.mimetype}`,
+                        ),
+                        false,
+                    );
                 }
             },
         }),
     )
-    async predict(
-        @UploadedFile() file: Express.Multer.File,
-        @Req() req: any,
-    ) {
+    async predict(@UploadedFile() file: Express.Multer.File, @Req() req: any) {
         if (!file) {
             throw new BadRequestException('No audio file provided');
         }
@@ -73,13 +85,16 @@ export class AiPredictionsController {
             );
 
             // ── Step 1: Validate duration ──────────────────
-            const validation = await this.audioProcessor.validateAudioFile(rawPath);
+            const validation =
+                await this.audioProcessor.validateAudioFile(rawPath);
 
             if (!validation.isValid) {
                 throw new BadRequestException(validation.error);
             }
 
-            this.logger.log(`Audio duration: ${validation.durationSeconds.toFixed(2)}s`);
+            this.logger.log(
+                `Audio duration: ${validation.durationSeconds.toFixed(2)}s`,
+            );
 
             // ── Step 2: Normalize to 22050Hz mono WAV ──────
             normalizedPath = await this.audioProcessor.normalizeAudio(rawPath);
@@ -99,7 +114,6 @@ export class AiPredictionsController {
                 prediction: result.prediction,
                 confidence: result.confidence,
             };
-
         } catch (err: any) {
             this.logger.error(`Predict failed: ${err?.message}`);
 
@@ -109,11 +123,11 @@ export class AiPredictionsController {
             // FastAPI error — forward the detail message
             const detail = err?.response?.data?.detail ?? 'Prediction failed';
             throw new InternalServerErrorException(detail);
-
         } finally {
             // Always clean up temp files
             if (rawPath) this.audioProcessor.deleteTempFile(rawPath);
-            if (normalizedPath) this.audioProcessor.deleteTempFile(normalizedPath);
+            if (normalizedPath)
+                this.audioProcessor.deleteTempFile(normalizedPath);
         }
     }
 }

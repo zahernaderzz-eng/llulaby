@@ -28,4 +28,8 @@ export class UpdateMyProfileDto {
     bio?: string;
 
     avatar?: string;
+
+    @IsNotEmpty()
+    @IsOptional()
+    dateOfBirth?: Date;
 }

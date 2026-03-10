@@ -26,9 +26,9 @@ export class AudioProcessorService {
 
         return new Promise((resolve, reject) => {
             ffmpeg(inputPath)
-                .audioFrequency(22050)    // match model's SAMPLE_RATE exactly
-                .audioChannels(1)         // mono
-                .audioCodec('pcm_s16le')  // 16-bit PCM — standard WAV
+                .audioFrequency(22050) // match model's SAMPLE_RATE exactly
+                .audioChannels(1) // mono
+                .audioCodec('pcm_s16le') // 16-bit PCM — standard WAV
                 .format('wav')
                 .on('start', (cmd: string) => {
                     this.logger.debug(`ffmpeg started: ${cmd}`);
@@ -56,7 +56,11 @@ export class AudioProcessorService {
         return new Promise((resolve) => {
             ffmpeg.ffprobe(filePath, (err: any, metadata: any) => {
                 if (err) {
-                    resolve({ isValid: false, durationSeconds: 0, error: err.message });
+                    resolve({
+                        isValid: false,
+                        durationSeconds: 0,
+                        error: err.message,
+                    });
                     return;
                 }
 
@@ -88,7 +92,8 @@ export class AudioProcessorService {
     deleteTempFile(filePath: string): void {
         if (!filePath) return;
         fs.unlink(filePath, (err) => {
-            if (err) this.logger.warn(`Could not delete temp file: ${filePath}`);
+            if (err)
+                this.logger.warn(`Could not delete temp file: ${filePath}`);
         });
     }
 }
