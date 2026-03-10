@@ -112,7 +112,7 @@ export class ReturnObject {
             name: child.name,
             dateBirth: child.dateBirth,
             gender: child.gender,
-            avatar: this.getChildAvatar(child.avatar),
+            avatar: child.avatar ? this.getChildAvatar(child.avatar) : null,
             height: child.height || null,
             weight: child.weight || null,
             bloodType: child.bloodType || null,

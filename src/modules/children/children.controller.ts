@@ -17,6 +17,7 @@ import { avatarInterceptor } from 'src/common/interceptors/avatar.interceptor';
 import { I18nService } from 'nestjs-i18n';
 import { AuthenticateGuardFactory } from '../auth/guards/authenticate.guard';
 import type { Request } from 'express';
+import console from 'console';
 
 @Controller('children')
 export class ChildrenController {
@@ -47,7 +48,9 @@ export class ChildrenController {
     @UseGuards(AuthenticateGuardFactory())
     async getProfile(@Req() request: Request) {
         const userId = request['user']['id'];
+        console.log(userId);
         const profile = (await this.childrenService.getProfile(userId)) || {};
+        console.log('profile=====================>', profile);
 
         return ApiUtil.formatResponse(
             200,
