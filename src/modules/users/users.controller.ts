@@ -7,6 +7,7 @@ import {
     Patch,
     Req,
     UploadedFile,
+    UseGuards,
     UseInterceptors,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
@@ -17,13 +18,14 @@ import { avatarInterceptor } from '../../common/interceptors/avatar.interceptor'
 import { UpdatePasswordDto } from './dto/update-password.dto';
 import { UpdateIdentifierDto } from './dto/update-identifier.dto';
 import { GetOtherProfileDto } from './dto/get-other-profile.dto';
+import { AuthenticateGuardFactory } from '../auth/guards/authenticate.guard';
 
 @Controller('users')
 export class UsersController {
     constructor(
         private readonly usersService: UsersService,
         private readonly i18nService: I18nService,
-    ) {}
+    ) { }
     @Get('test')
     test() {
         const test = this.usersService.test();
@@ -65,13 +67,14 @@ export class UsersController {
         );
     }
 
-    @Patch('my-profile')
+    @UseGuards(AuthenticateGuardFactory())
     @UseInterceptors(avatarInterceptor)
+    @Patch('my-profile')
     async updateMyProfile(
         @Req() request: Request,
         @Body() data: UpdateMyProfileDto,
         @UploadedFile() avatar?: Express.Multer.File,
-    ) {
+    ): Promise<{ success: boolean; statusCode: number; message: string; data: { [key: string]: any; }; totalCount: number | undefined; page: number | undefined; totalPages: number | undefined; }> {
         const profile = await this.usersService.updateProfile(
             request['user']['id'],
             data,
