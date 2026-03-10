@@ -20,6 +20,8 @@ import { UpdateIdentifierDto } from './dto/update-identifier.dto';
 import { GetOtherProfileDto } from './dto/get-other-profile.dto';
 import { AuthenticateGuardFactory } from '../auth/guards/authenticate.guard';
 
+
+@UseGuards(AuthenticateGuardFactory())
 @Controller('users')
 export class UsersController {
     constructor(
@@ -67,7 +69,6 @@ export class UsersController {
         );
     }
 
-    @UseGuards(AuthenticateGuardFactory())
     @UseInterceptors(avatarInterceptor)
     @Patch('my-profile')
     async updateMyProfile(
