@@ -16,7 +16,7 @@ export class FastApiClientService {
     private readonly client: AxiosInstance;
 
     constructor(private configService: ConfigService) {
-        let aiServiceUrl = this.configService.get<string>('AI_SERVICE_URL') || 'http://63.179.148.169/ai';
+        let aiServiceUrl = this.configService.get<string>('AI_SERVICE_URL') || 'http://63.179.148.169:8000';
 
         // Strip trailing /predict if present to avoid duplication with the post path
         if (aiServiceUrl.endsWith('/predict')) {
@@ -43,16 +43,31 @@ export class FastApiClientService {
 
         this.logger.log(`Sending to FastAPI: ${normalizedWavPath}`);
 
-        const response = await this.client.post<PredictionResult>(
+        const response = await this.client.post<string>(
             '/predict',
             form,
-            { headers: form.getHeaders() },
+            {
+                headers: form.getHeaders(),
+                // Ensure response is treated as text if it's a raw string
+                responseType: 'text'
+            },
         );
+
+        // The new model returns a raw string (e.g., "belly_pain" or "\"belly_pain\"")
+        // Axios might parse it if it looks like JSON, or keep it as string.
+        let prediction = response.data;
+        if (typeof prediction === 'string') {
+            // Remove quotes if FastAPI returns a JSON-quoted string
+            prediction = prediction.replace(/^"(.*)"$/, '$1');
+        }
 
         this.logger.log(
-            `FastAPI response: ${response.data.prediction} (${response.data.confidence})`,
+            `FastAPI response: ${prediction}`,
         );
 
-        return response.data;
+        return {
+            prediction: prediction || 'unknown',
+            confidence: 1.0, // Default confidence as it's not provided by the new model
+        };
     }
 }
