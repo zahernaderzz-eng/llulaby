@@ -6,8 +6,9 @@ import * as fs from 'fs';
 
 export interface PredictionResult {
     prediction: string;    // e.g. "belly_pain"
-    confidence: number;    // e.g. 0.9999
+    confidence?: number;    // e.g. 0.9999
     all_probabilities?: Record<string, number>;
+    [key: string]: any;     // Allow for other dynamic fields from the model
 }
 
 @Injectable()
@@ -48,26 +49,37 @@ export class FastApiClientService {
             form,
             {
                 headers: form.getHeaders(),
-                // Ensure response is treated as text if it's a raw string
+                // Ensure response is treated as text for manual parsing
                 responseType: 'text'
             },
         );
 
-        // The new model returns a raw string (e.g., "belly_pain" or "\"belly_pain\"")
-        // Axios might parse it if it looks like JSON, or keep it as string.
-        let prediction = response.data;
-        if (typeof prediction === 'string') {
-            // Remove quotes if FastAPI returns a JSON-quoted string
-            prediction = prediction.replace(/^"(.*)"$/, '$1');
+        let data = response.data;
+        let result: PredictionResult;
+
+        try {
+            // Check if it's a JSON string
+            const parsed = JSON.parse(data);
+
+            if (typeof parsed === 'object' && parsed !== null) {
+                result = parsed as PredictionResult;
+                // Ensure prediction field exists or use predicted_label
+                if (!result.prediction && result.predicted_label) {
+                    result.prediction = result.predicted_label;
+                }
+            } else {
+                // It's a quoted string from JSON.parse
+                result = { prediction: String(parsed) };
+            }
+        } catch (e) {
+            // Not JSON, use raw string
+            result = { prediction: data.replace(/^"(.*)"$/, '$1') };
         }
 
         this.logger.log(
-            `FastAPI response: ${prediction}`,
+            `FastAPI response parsed: ${JSON.stringify(result)}`,
         );
 
-        return {
-            prediction: prediction || 'unknown',
-            confidence: 1.0, // Default confidence as it's not provided by the new model
-        };
+        return result;
     }
 }

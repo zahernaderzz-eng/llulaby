@@ -25,7 +25,7 @@ export class AiPredictionsController {
         private readonly audioProcessor: AudioProcessorService,
         private readonly fastApiClient: FastApiClientService,
         private readonly childrenService: ChildrenService,
-    ) {}
+    ) { }
 
     @UseGuards(AuthenticateGuardFactory())
     @Post('predict')
@@ -103,16 +103,21 @@ export class AiPredictionsController {
             const result = await this.fastApiClient.predict(normalizedPath);
 
             // ── Step 4: Save to database ───────
+            // We need a string prediction and a number confidence for the DB record
+            const dbPrediction = result.prediction || result.predicted_label || 'unknown';
+            const dbConfidence = typeof result.confidence === 'number' ? result.confidence : 1.0;
+
             await this.childrenService.addPrediction(
                 userId,
-                result.prediction,
-                result.confidence,
+                dbPrediction,
+                dbConfidence,
             );
 
+            // Spread the result from AI model and ensure success: true
+            // If the model didn't return confidence, it won't be in the response
             return {
                 success: true,
-                prediction: result.prediction,
-                confidence: result.confidence,
+                ...result
             };
         } catch (err: any) {
             this.logger.error(`Predict failed: ${err?.message}`);
