@@ -62,6 +62,7 @@ export class ChildVaccineService {
 
     async markTaken(userId: string, dto: MarkTakenDto) {
         const child = await this.childrenService.findOne(userId);
+        console.log(child)
         if (!child) throw new NotFoundException('Child not found');
 
         const childVaccine = await this.childVaccineModel.findOne({
