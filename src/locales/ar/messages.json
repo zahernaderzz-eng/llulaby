@@ -115,5 +115,10 @@
     "invalidHeight": "يجب أن يكون الطول رقماً.",
     "invalidWeight": "يجب أن يكون الوزن رقماً.",
     "invalidBloodType": "يجب أن يكون فصيلة الدم نصاً.",
-    "invalidCurrentPassword": "كلمة المرور الحالية التي أدخلتها غير صحيحة."
+    "invalidCurrentPassword": "كلمة المرور الحالية التي أدخلتها غير صحيحة.",
+    "vaccineCreated": "تم إنشاء اللقاح بنجاح.",
+    "vaccinesFetched": "تم جلب اللقاحات بنجاح.",
+    "vaccineFetched": "تم جلب اللقاح بنجاح.",
+    "vaccineUpdated": "تم تحديث اللقاح بنجاح.",
+    "vaccineDeleted": "تم حذف اللقاح بنجاح."
 }

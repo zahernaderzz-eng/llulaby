@@ -24,7 +24,11 @@ export class PredictionRecord {
     toObject: { virtuals: true },
 })
 export class Child {
-    @Prop({ type: MongooseSchema.Types.ObjectId, ref: Identity.name, required: true })
+    @Prop({
+        type: MongooseSchema.Types.ObjectId,
+        ref: Identity.name,
+        required: true,
+    })
     identity: string | Identity;
 
     @Prop({ required: true })

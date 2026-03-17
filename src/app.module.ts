@@ -27,6 +27,7 @@ import { FirebaseModule } from './core/firebase/firebase.module';
 import { RequestLoggerMiddleware } from './common/middlewares/request-logger.middleware';
 import { AiPredictionsModule } from './modules/ai-predictions/ai-predictions.module';
 import { ChildrenModule } from './modules/children/children.module';
+import { VaccineModule } from './modules/vaccine/vaccine.module';
 
 @Module({
     imports: [
@@ -55,6 +56,7 @@ import { ChildrenModule } from './modules/children/children.module';
         FirebaseModule,
         AiPredictionsModule,
         ChildrenModule,
+        VaccineModule,
     ],
     controllers: [],
     providers: [

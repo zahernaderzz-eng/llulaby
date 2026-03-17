@@ -115,5 +115,10 @@
     "invalidHeight": "Height must be a number.",
     "invalidWeight": "Weight must be a number.",
     "invalidBloodType": "Blood type must be a string.",
-    "invalidCurrentPassword": "The current password you entered is incorrect."
+    "invalidCurrentPassword": "The current password you entered is incorrect.",
+    "vaccineCreated": "Vaccine created successfully.",
+    "vaccinesFetched": "Vaccines fetched successfully.",
+    "vaccineFetched": "Vaccine fetched successfully.",
+    "vaccineUpdated": "Vaccine updated successfully.",
+    "vaccineDeleted": "Vaccine deleted successfully."
 }
