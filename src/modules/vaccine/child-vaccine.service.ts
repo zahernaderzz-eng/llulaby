@@ -65,11 +65,12 @@ export class ChildVaccineService {
         console.log(child)
         if (!child) throw new NotFoundException('Child not found');
 
+        console.log(dto.vaccineId)
         const childVaccine = await this.childVaccineModel.findOne({
             child: child._id,
             vaccine: new Types.ObjectId(dto.vaccineId)
         });
-
+        console.log(childVaccine)
         if (!childVaccine) throw new NotFoundException('Child vaccine not found');
 
         childVaccine.isTaken = dto.isTaken;
