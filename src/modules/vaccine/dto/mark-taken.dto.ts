@@ -1,11 +1,14 @@
-import { IsOptional, IsDateString, IsString } from 'class-validator';
+import { IsOptional, IsDateString, IsString, IsBoolean } from 'class-validator';
 
 export class MarkTakenDto {
-    @IsOptional()
-    @IsDateString()
-    takenAt?: string;
 
-    @IsOptional()
+
+    @IsBoolean()
+    isTaken: boolean;
+
+
+
+
     @IsString()
-    notes?: string;
+    vaccineId: string;
 }

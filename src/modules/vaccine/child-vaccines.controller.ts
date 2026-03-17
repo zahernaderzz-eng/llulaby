@@ -2,11 +2,11 @@ import {
     Controller,
     Get,
     Param,
-    Put,
     Body,
     UseGuards,
     Req,
     Query,
+    Patch,
 } from '@nestjs/common';
 import { ChildVaccineService } from './child-vaccine.service';
 import { ApiUtil } from 'src/common/utils/api-util';
@@ -40,6 +40,22 @@ export class ChildVaccinesController {
             200,
             this.i18nService.t('messages.vaccinesFetched'),
             { vaccines: data.map((v) => this.returnObject.childVaccineDetails(v)) },
+        );
+    }
+
+
+    @Patch('mark-taken')
+    @UseGuards(AuthenticateGuardFactory())
+    async markTaken(
+        @Req() request: any,
+        @Body() dto: { vaccineId: string, isTaken: boolean },
+    ) {
+        const userId = request['user']['id']
+        const data = await this.childVaccineService.markTaken(userId, dto);
+        return ApiUtil.formatResponse(
+            200,
+            this.i18nService.t('messages.vaccineMarkedTaken'),
+            { vaccine: this.returnObject.childVaccineDetails(data) },
         );
     }
 

@@ -13,6 +13,7 @@ import {
 import { Vaccine, VaccineDocument } from './entities/vaccine.entity';
 import { ChildrenService } from '../children/children.service';
 import { ReturnObject } from 'src/common/return-object/return-object';
+import { MarkTakenDto } from './dto/mark-taken.dto';
 
 @Injectable()
 export class ChildVaccineService {
@@ -59,12 +60,21 @@ export class ChildVaccineService {
         }
     }
 
-    async markTaken(childVaccineId: string, takenAt?: Date, notes?: string) {
-        return this.childVaccineModel.findByIdAndUpdate(
-            childVaccineId,
-            { isTaken: true, takenAt: takenAt ?? new Date(), notes },
-            { new: true },
-        );
+    async markTaken(userId: string, dto: MarkTakenDto) {
+        const child = await this.childrenService.findOne(userId);
+        if (!child) throw new NotFoundException('Child not found');
+
+        const childVaccine = await this.childVaccineModel.findOne({
+            child: child._id,
+            vaccine: new Types.ObjectId(dto.vaccineId)
+        });
+
+        if (!childVaccine) throw new NotFoundException('Child vaccine not found');
+
+        childVaccine.isTaken = dto.isTaken;
+        await childVaccine.save();
+
+        return childVaccine;
     }
 
     async getAllForChild(
