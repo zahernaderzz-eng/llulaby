@@ -6,15 +6,17 @@ import { ChildrenService } from './children.service';
 import { ChildrenController } from './children.controller';
 import { IdentitiesModule } from '../identities/identities.module';
 import { UserTokensModule } from '../user-tokens/user-tokens.module';
+import { VaccineModule } from '../vaccine/vaccine.module';
 
 @Module({
     imports: [
         MongooseModule.forFeature([{ name: Child.name, schema: ChildSchema }]),
         IdentitiesModule,
         UserTokensModule,
+        VaccineModule,
     ],
     controllers: [ChildrenController],
     providers: [ChildrenService],
     exports: [ChildrenService],
 })
-export class ChildrenModule { }
+export class ChildrenModule {}

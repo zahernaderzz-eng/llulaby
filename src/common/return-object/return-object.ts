@@ -4,16 +4,16 @@ import { CountryDocument } from 'src/modules/countries/entities/country.entity';
 
 @Injectable()
 export class ReturnObject {
-    constructor(private readonly sharedVariables: SharedVariables) { }
+    constructor(private readonly sharedVariables: SharedVariables) {}
 
     getUserAvatar(avatar: string | null) {
         return avatar === '' || avatar === null
             ? this.sharedVariables.ADDRESS +
-            this.sharedVariables.USER_AVATAR_IMAGES +
-            'default.png'
+                  this.sharedVariables.USER_AVATAR_IMAGES +
+                  'default.png'
             : avatar.startsWith('https')
-                ? avatar
-                : this.sharedVariables.ADDRESS +
+              ? avatar
+              : this.sharedVariables.ADDRESS +
                 this.sharedVariables.USER_AVATAR_IMAGES +
                 avatar;
     }
@@ -21,11 +21,11 @@ export class ReturnObject {
     getAdminAvatar(avatar: string | null) {
         return avatar === '' || avatar === null
             ? this.sharedVariables.ADDRESS +
-            this.sharedVariables.ADMIN_AVATAR_IMAGES +
-            'default.png'
+                  this.sharedVariables.ADMIN_AVATAR_IMAGES +
+                  'default.png'
             : avatar.startsWith('https')
-                ? avatar
-                : this.sharedVariables.ADDRESS +
+              ? avatar
+              : this.sharedVariables.ADDRESS +
                 this.sharedVariables.ADMIN_AVATAR_IMAGES +
                 avatar;
     }
@@ -96,11 +96,11 @@ export class ReturnObject {
     getChildAvatar(avatar: string | null) {
         return avatar === '' || avatar === null
             ? this.sharedVariables.ADDRESS +
-            this.sharedVariables.CHILDREN_AVATAR_IMAGES +
-            'default.png'
+                  this.sharedVariables.CHILDREN_AVATAR_IMAGES +
+                  'default.png'
             : avatar.startsWith('https')
-                ? avatar
-                : this.sharedVariables.ADDRESS +
+              ? avatar
+              : this.sharedVariables.ADDRESS +
                 this.sharedVariables.CHILDREN_AVATAR_IMAGES +
                 avatar;
     }
@@ -117,6 +117,51 @@ export class ReturnObject {
             weight: child.weight || null,
             bloodType: child.bloodType || null,
             predictions: child.predictions || [],
+        };
+    }
+
+    childVaccine(childVaccine: any) {
+        return {
+            id: childVaccine._id,
+            child: this.child(childVaccine.child),
+            vaccine: childVaccine.vaccine,
+            isTaken: childVaccine.isTaken,
+            scheduledDate: childVaccine.scheduledDate,
+            takenAt: childVaccine.takenAt,
+        };
+    }
+
+    childVaccineDetails(childVaccine: any) {
+        let vaccineObj: any = null;
+        if (childVaccine.vaccineData && childVaccine.vaccineData.length > 0) {
+            const v = childVaccine.vaccineData[0];
+            vaccineObj = {
+                id: v._id,
+                name: v.name,
+                ageRequired: v.ageRequired,
+                dose: v.dose,
+                vaccineType: v.vaccineType,
+                description: v.description,
+                repeat: v.repeat,
+            };
+        } else if (childVaccine.vaccine && childVaccine.vaccine._id) {
+            vaccineObj = {
+                id: childVaccine.vaccine._id,
+                name: childVaccine.vaccine.name,
+                ageRequired: childVaccine.vaccine.ageRequired,
+                dose: childVaccine.vaccine.dose,
+                vaccineType: childVaccine.vaccine.vaccineType,
+                description: childVaccine.vaccine.description,
+                repeat: childVaccine.vaccine.repeat,
+            };
+        }
+
+        return {
+            id: childVaccine._id,
+            isTaken: childVaccine.isTaken,
+            status: childVaccine.status,
+            scheduledDate: childVaccine.scheduledDate,
+            vaccine: vaccineObj,
         };
     }
 }

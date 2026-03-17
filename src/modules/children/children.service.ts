@@ -1,7 +1,12 @@
-import { Injectable } from '@nestjs/common';
+import {
+    Injectable,
+    BadRequestException,
+    NotFoundException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Child, ChildDocument } from './entities/child.entity';
+import { ChildVaccineService } from 'src/modules/vaccine/child-vaccine.service';
 import { ImageUtil } from 'src/common/utils/image.util';
 import { ReturnObject } from 'src/common/return-object/return-object';
 
@@ -10,9 +15,14 @@ export class ChildrenService {
     constructor(
         @InjectModel(Child.name) private childModel: Model<ChildDocument>,
         private readonly returnObject: ReturnObject,
-    ) { }
+        private readonly childVaccineService: ChildVaccineService,
+    ) {}
 
-    async addPrediction(userId: string, prediction: string, confidence: number) {
+    async addPrediction(
+        userId: string,
+        prediction: string,
+        confidence: number,
+    ) {
         let child = await this.childModel.findOne({ identity: userId });
 
         if (!child) {
@@ -32,7 +42,34 @@ export class ChildrenService {
     }
 
     async create(userId: string, data: any, avatar?: Express.Multer.File) {
-        let child = await this.childModel.findOne({ identity: userId });
+        const existing = await this.childModel.findOne({ identity: userId });
+        if (existing) throw new BadRequestException('Child already exists');
+
+        if (avatar) {
+            data.avatar = await ImageUtil.processAndSaveAvatar(
+                avatar.buffer,
+                'children',
+            );
+        }
+
+        const child = new this.childModel({ identity: userId, ...data });
+        await child.save();
+
+        try {
+            await this.childVaccineService.generateForChild(
+                (child as any)._id.toString(),
+                child.dateBirth,
+            );
+        } catch (e) {
+            console.error('Failed to generate child vaccines', e);
+        }
+
+        return this.returnObject.child(child);
+    }
+
+    async update(userId: string, data: any, avatar?: Express.Multer.File) {
+        const child = await this.childModel.findOne({ identity: userId });
+        if (!child) throw new NotFoundException('Child not found');
 
         if (avatar) {
             if (child?.avatar) {
@@ -44,16 +81,9 @@ export class ChildrenService {
             );
         }
 
-        if (!child) {
-            child = new this.childModel({
-                identity: userId,
-                ...data,
-            });
-        } else {
-            Object.assign(child, data);
-        }
-
+        Object.assign(child, data);
         await child.save();
+
         return this.returnObject.child(child);
     }
 
@@ -64,6 +94,10 @@ export class ChildrenService {
     }
 
     async getPredictions(userId: string) {
+        return this.childModel.findOne({ identity: userId });
+    }
+
+    async findOne(userId: string) {
         return this.childModel.findOne({ identity: userId });
     }
 }

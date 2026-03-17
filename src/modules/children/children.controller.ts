@@ -17,7 +17,6 @@ import { avatarInterceptor } from 'src/common/interceptors/avatar.interceptor';
 import { I18nService } from 'nestjs-i18n';
 import { AuthenticateGuardFactory } from '../auth/guards/authenticate.guard';
 import type { Request } from 'express';
-import console from 'console';
 
 @Controller('children')
 export class ChildrenController {
@@ -38,8 +37,8 @@ export class ChildrenController {
         await this.childrenService.create(userId, data, avatar);
 
         return ApiUtil.formatResponse(
-            200,
-            this.i18nService.t('messages.documentUpdated'),
+            201,
+            this.i18nService.t('messages.documentCreated'),
             {},
         );
     }
@@ -48,9 +47,8 @@ export class ChildrenController {
     @UseGuards(AuthenticateGuardFactory())
     async getProfile(@Req() request: Request) {
         const userId = request['user']['id'];
-        console.log(userId);
+
         const profile = (await this.childrenService.getProfile(userId)) || {};
-        console.log('profile=====================>', profile);
 
         return ApiUtil.formatResponse(
             200,
@@ -68,7 +66,7 @@ export class ChildrenController {
         @UploadedFile() avatar?: Express.Multer.File,
     ) {
         const userId = request['user']['id'];
-        await this.childrenService.create(userId, data, avatar);
+        await this.childrenService.update(userId, data, avatar);
 
         return ApiUtil.formatResponse(
             200,

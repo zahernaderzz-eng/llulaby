@@ -9,7 +9,7 @@ export class VaccineService {
     constructor(
         private readonly returnObject: ReturnObject,
         @InjectModel(Vaccine.name)
-        private readonly vaccineModel: Model<Vaccine>,
+        private readonly vaccineModel: Model<VaccineDocument>,
     ) {}
 
     async create(createDto: any): Promise<VaccineDocument> {
