@@ -25,7 +25,7 @@ export class ChildVaccineService {
         @Inject(forwardRef(() => ChildrenService))
         private readonly childrenService: ChildrenService,
         private readonly returnObject: ReturnObject,
-    ) { }
+    ) {}
 
     private weeksToMs(weeks: number) {
         return weeks * 7 * 24 * 60 * 60 * 1000;
@@ -62,16 +62,17 @@ export class ChildVaccineService {
 
     async markTaken(userId: string, dto: MarkTakenDto) {
         const child = await this.childrenService.findOne(userId);
-        console.log(child)
+        console.log(child);
         if (!child) throw new NotFoundException('Child not found');
 
-        console.log(dto.vaccineId)
+        console.log(dto.vaccineId);
         const childVaccine = await this.childVaccineModel.findOne({
             child: child._id,
-            vaccine: new Types.ObjectId(dto.vaccineId)
+            _id: new Types.ObjectId(dto.vaccineId),
         });
-        console.log(childVaccine)
-        if (!childVaccine) throw new NotFoundException('Child vaccine not found');
+        console.log(childVaccine);
+        if (!childVaccine)
+            throw new NotFoundException('Child vaccine not found');
 
         childVaccine.isTaken = dto.isTaken;
         await childVaccine.save();
