@@ -43,7 +43,7 @@ export class Child {
     @Prop({ type: [PredictionRecord], default: [] })
     predictions: PredictionRecord[];
 
-    @Prop()
+    @Prop({ default: '' })
     avatar?: string;
 
     @Prop()

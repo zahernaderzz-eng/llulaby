@@ -89,7 +89,6 @@ export class ChildrenService {
 
     async getProfile(userId: string) {
         const child = await this.childModel.findOne({ identity: userId });
-        console.log('child=====================>', child);
         return this.returnObject.child(child);
     }
 

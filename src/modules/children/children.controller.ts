@@ -23,7 +23,7 @@ export class ChildrenController {
     constructor(
         private readonly childrenService: ChildrenService,
         private readonly i18nService: I18nService,
-    ) { }
+    ) {}
 
     @Post()
     @UseGuards(AuthenticateGuardFactory())

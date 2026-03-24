@@ -98,7 +98,7 @@ export class ReturnObject {
             ? this.sharedVariables.ADDRESS +
                   this.sharedVariables.CHILDREN_AVATAR_IMAGES +
                   'default.png'
-            : avatar.startsWith('https')
+            : avatar.startsWith('http')
               ? avatar
               : this.sharedVariables.ADDRESS +
                 this.sharedVariables.CHILDREN_AVATAR_IMAGES +
@@ -112,7 +112,7 @@ export class ReturnObject {
             name: child.name,
             dateBirth: child.dateBirth,
             gender: child.gender,
-            avatar: child.avatar ? this.getChildAvatar(child.avatar) : null,
+            avatar: this.getChildAvatar(child.avatar),
             height: child.height || null,
             weight: child.weight || null,
             bloodType: child.bloodType || null,
