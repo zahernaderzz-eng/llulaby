@@ -126,5 +126,6 @@
     "monthRequired": "Month is required.",
     "invalidMonth": "Month is invalid.",
     "motorDevelopmentDataFetchedSuccess": "Motor development data fetched successfully.",
-    "feedingDataFetchedSuccess": "Feeding data fetched successfully."
+    "feedingDataFetchedSuccess": "Feeding data fetched successfully.",
+    "accountDeleted": "Account deleted successfully."
 }

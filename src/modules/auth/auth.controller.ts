@@ -1,6 +1,7 @@
 import {
     Body,
     Controller,
+    Delete,
     Post,
     Req,
     UploadedFile,
@@ -26,7 +27,7 @@ export class AuthController {
     constructor(
         private readonly authService: AuthService,
         private readonly i18nService: I18nService,
-    ) { }
+    ) {}
 
     @Post('signup')
     @UseInterceptors(avatarInterceptor)
@@ -107,7 +108,10 @@ export class AuthController {
 
     @Post('change-password')
     @UseGuards(AuthenticateGuardFactory())
-    async changePassword(@Req() request: Request, @Body() data: ChangePasswordDto) {
+    async changePassword(
+        @Req() request: Request,
+        @Body() data: ChangePasswordDto,
+    ) {
         await this.authService.changePassword(request['user']['id'], data);
 
         return ApiUtil.formatResponse(
@@ -135,6 +139,18 @@ export class AuthController {
         return ApiUtil.formatResponse(
             200,
             this.i18nService.t('messages.passwordResetSuccess'),
+            {},
+        );
+    }
+
+    @Delete('delete-account')
+    @UseGuards(AuthenticateGuardFactory())
+    async deleteAccount(@Req() request: Request) {
+        await this.authService.deleteAccount(request['user']['id']);
+
+        return ApiUtil.formatResponse(
+            200,
+            this.i18nService.t('messages.accountDeleted'),
             {},
         );
     }

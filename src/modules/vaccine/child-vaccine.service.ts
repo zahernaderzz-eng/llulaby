@@ -145,4 +145,8 @@ export class ChildVaccineService {
         const data = await this.childVaccineModel.aggregate(pipeline);
         return data;
     }
+
+    async deleteAllForChild(childId: string) {
+        await this.childVaccineModel.deleteMany({ child: new Types.ObjectId(childId) });
+    }
 }

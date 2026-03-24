@@ -14,6 +14,8 @@ import { UpdateIdentifierDto } from './dto/update-identifier.dto';
 import { OtpUtil } from 'src/common/utils/otp-util';
 import { AuthUtil } from 'src/common/utils/auth-util';
 import type { RedisClientType } from 'redis';
+import { ChildrenService } from '../children/children.service';
+import { forwardRef } from '@nestjs/common';
 
 @Injectable()
 export class UsersService {
@@ -22,6 +24,8 @@ export class UsersService {
         private readonly i18nService: I18nService,
         private readonly returnObject: ReturnObject,
         private readonly authHelper: AuthHelper,
+        @Inject(forwardRef(() => ChildrenService))
+        private readonly childrenService: ChildrenService,
         @InjectModel(User.name) private readonly userModel: Model<User>,
         @Inject('REDIS_CLIENT') private readonly redisClient: RedisClientType,
     ) {}
@@ -43,7 +47,7 @@ export class UsersService {
     }
 
     async findById(
-        id: string,
+        id: any,
         options?: { populate?: any; lean?: boolean },
     ): Promise<UserDocument | null> {
         const query = this.userModel.findById(id);
@@ -184,6 +188,8 @@ export class UsersService {
                 this.i18nService.t('messages.userNotFound'),
                 400,
             );
+
+        await this.childrenService.deleteAllForIdentity(deletedIdentity.id);
 
         await Promise.all([
             this.authHelper.deleteAllUserTokens(deletedIdentity.id),

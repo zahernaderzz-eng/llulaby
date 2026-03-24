@@ -20,6 +20,9 @@ import { CountriesService } from '../countries/countries.service';
 import { ForgotPasswordDto } from './dto/forgot-password.dto';
 import { VerifyForgotPasswordDto } from './dto/verify-forgot-password.dto';
 import { ChangePasswordDto } from './dto/change-password.dto';
+import { Types } from 'mongoose';
+import { forwardRef } from '@nestjs/common';
+import { ChildrenService } from '../children/children.service';
 
 @Injectable()
 export class AuthService {
@@ -30,8 +33,10 @@ export class AuthService {
         private readonly usersService: UsersService,
         private readonly i18nService: I18nService,
         private readonly countriesService: CountriesService,
+        @Inject(forwardRef(() => ChildrenService))
+        private readonly childrenService: ChildrenService,
         @Inject('REDIS_CLIENT') private readonly redisClient: RedisClientType,
-    ) { }
+    ) {}
 
     async signup(data: SignupDto, avatar?: Express.Multer.File) {
         let identity: IdentityDocument | undefined;
@@ -356,6 +361,37 @@ export class AuthService {
         await Promise.all([
             this.authHelper.deleteAllUserTokens(identity.id),
             this.authHelper.deleteAllUserDevices(identity.id),
+        ]);
+    }
+
+    async deleteAccount(userId: string) {
+        const identity = await this.identitiesService.findById(userId);
+
+        if (!identity) {
+            throw new AppException(
+                this.i18nService.t('messages.userNotFound'),
+                404,
+            );
+        }
+
+        const user = await this.usersService.findOne({
+            identity: identity._id,
+        });
+
+        if (!user) {
+            throw new AppException(
+                this.i18nService.t('messages.userNotFound'),
+                404,
+            );
+        }
+
+        await this.childrenService.deleteAllForIdentity(identity.id);
+
+        await Promise.all([
+            this.authHelper.deleteAllUserTokens(identity.id),
+            this.authHelper.deleteAllUserDevices(identity.id),
+            this.identitiesService.deleteById(identity.id),
+            this.usersService.deleteById(user.id.toString()),
         ]);
     }
 }

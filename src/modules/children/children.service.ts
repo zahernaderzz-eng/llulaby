@@ -99,4 +99,15 @@ export class ChildrenService {
     async findOne(userId: string) {
         return this.childModel.findOne({ identity: userId });
     }
+
+    async deleteAllForIdentity(identityId: string) {
+        const children = await this.childModel.find({ identity: identityId });
+        for (const child of children) {
+            if (child.avatar) {
+                await ImageUtil.removeAvatar('children', child.avatar);
+            }
+            await this.childVaccineService.deleteAllForChild((child as any)._id.toString());
+        }
+        await this.childModel.deleteMany({ identity: identityId });
+    }
 }

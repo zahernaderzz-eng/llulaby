@@ -10,6 +10,7 @@ import { NodeMailerModule } from 'src/services/nodemailer/mailer.module';
 import { PasswordsMatch } from './validation/passwords-match';
 import { IdentitiesModule } from '../identities/identities.module';
 import { UsersModule } from '../users/users.module';
+import { ChildrenModule } from '../children/children.module';
 
 @Module({
     imports: [
@@ -20,6 +21,7 @@ import { UsersModule } from '../users/users.module';
         UserTokensModule,
         AuthenticaModule,
         NodeMailerModule,
+        forwardRef(() => ChildrenModule),
     ],
     controllers: [AuthController],
     providers: [AuthService, AuthHelper, PasswordsMatch],
