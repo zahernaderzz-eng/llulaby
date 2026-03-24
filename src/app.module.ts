@@ -28,6 +28,7 @@ import { RequestLoggerMiddleware } from './common/middlewares/request-logger.mid
 import { AiPredictionsModule } from './modules/ai-predictions/ai-predictions.module';
 import { ChildrenModule } from './modules/children/children.module';
 import { VaccineModule } from './modules/vaccine/vaccine.module';
+import { BabyRoutineModule } from './modules/baby_routine/baby_routine.module';
 
 @Module({
     imports: [
@@ -57,6 +58,7 @@ import { VaccineModule } from './modules/vaccine/vaccine.module';
         AiPredictionsModule,
         ChildrenModule,
         VaccineModule,
+        BabyRoutineModule,
     ],
     controllers: [],
     providers: [

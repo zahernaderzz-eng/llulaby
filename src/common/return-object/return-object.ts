@@ -164,4 +164,38 @@ export class ReturnObject {
             vaccine: vaccineObj,
         };
     }
+
+    physicalGrowth(physicalGrowth: any, lang: string = 'en') {
+        return {
+            minMonth: physicalGrowth.minMonth,
+            maxMonth: physicalGrowth.maxMonth,
+            overview: physicalGrowth.overview[lang],
+            weight: physicalGrowth.weight[lang],
+            height: physicalGrowth.height[lang],
+        };
+    }
+
+    motorDevelopment(motorDevelopment: any, lang: string = 'en') {
+        return {
+            minMonth: motorDevelopment.minMonth,
+            maxMonth: motorDevelopment.maxMonth,
+            overview: motorDevelopment.overview[lang],
+            movement: motorDevelopment.movements.map((m: any) => m[lang]),
+        };
+    }
+
+    feeding(feeding: any, lang: string = 'en') {
+        return {
+            minMonth: feeding.minMonth,
+            maxMonth: feeding.maxMonth,
+            overview: feeding.overview[lang],
+
+            foods: feeding.foods.map((f: any) => ({
+                category: f.category[lang],
+                items: f.items.map((i: any) => i[lang]),
+            })),
+
+            notes: feeding.notes.map((n: any) => n[lang]),
+        };
+    }
 }

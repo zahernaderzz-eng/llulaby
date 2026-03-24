@@ -120,5 +120,11 @@
     "vaccinesFetched": "Vaccines fetched successfully.",
     "vaccineFetched": "Vaccine fetched successfully.",
     "vaccineUpdated": "Vaccine updated successfully.",
-    "vaccineDeleted": "Vaccine deleted successfully."
+    "vaccineDeleted": "Vaccine deleted successfully.",
+    "babyGrowthDataFetchedSuccess": "Baby growth data fetched successfully.",
+    "langRequired": "Language is required.",
+    "monthRequired": "Month is required.",
+    "invalidMonth": "Month is invalid.",
+    "motorDevelopmentDataFetchedSuccess": "Motor development data fetched successfully.",
+    "feedingDataFetchedSuccess": "Feeding data fetched successfully."
 }

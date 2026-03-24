@@ -120,5 +120,11 @@
     "vaccinesFetched": "تم جلب اللقاحات بنجاح.",
     "vaccineFetched": "تم جلب اللقاح بنجاح.",
     "vaccineUpdated": "تم تحديث اللقاح بنجاح.",
-    "vaccineDeleted": "تم حذف اللقاح بنجاح."
+    "vaccineDeleted": "تم حذف اللقاح بنجاح.",
+    "babyGrowthDataFetchedSuccess": "تم جلب بيانات النمو البشري بنجاح.",
+    "langRequired": "اللغة مطلوبة.",
+    "monthRequired": "الشهر مطلوب.",
+    "invalidMonth": "الشهر غير صالح.",
+    "motorDevelopmentDataFetchedSuccess": "تم جلب بيانات تنمية الحركة بنجاح.",
+    "feedingDataFetchedSuccess": "تم جلب بيانات الاكل بنجاح."
 }
