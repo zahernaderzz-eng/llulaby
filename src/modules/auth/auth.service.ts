@@ -199,6 +199,7 @@ export class AuthService {
     }
 
     async signin(data: SigninDto) {
+        console.log(data);
         const type = AuthUtil.getIdentifierType(data.identifier);
 
         const identity = await this.identitiesService.findOne(
