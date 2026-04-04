@@ -126,5 +126,6 @@
     "monthRequired": "الشهر مطلوب.",
     "invalidMonth": "الشهر غير صالح.",
     "motorDevelopmentDataFetchedSuccess": "تم جلب بيانات تنمية الحركة بنجاح.",
-    "feedingDataFetchedSuccess": "تم جلب بيانات الاكل بنجاح."
+    "feedingDataFetchedSuccess": "تم جلب بيانات الاكل بنجاح.",
+    "accountDeleted": "تم حذف الحساب بنجاح."
 }

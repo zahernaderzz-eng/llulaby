@@ -6,6 +6,7 @@ import { NotificationSender } from './notifications-sender';
 import { FirebaseModule } from 'src/core/firebase/firebase.module';
 import { DevicesModule } from '../devices/devices.module';
 import { IdentitiesModule } from '../identities/identities.module';
+import { UserTokensModule } from '../user-tokens/user-tokens.module';
 
 @Module({
     imports: [
@@ -13,9 +14,11 @@ import { IdentitiesModule } from '../identities/identities.module';
         FirebaseModule,
         DevicesModule,
         IdentitiesModule,
+        UserTokensModule
+
     ],
     controllers: [NotificationsController],
     providers: [NotificationsService, NotificationSender],
     exports: [NotificationsService],
 })
-export class NotificationsModule {}
+export class NotificationsModule { }

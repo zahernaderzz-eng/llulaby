@@ -39,7 +39,7 @@ export class NotificationsService {
             return;
         }
 
-        const devices = await this.devicesService.find({ user: user._id });
+        const devices = await this.devicesService.find({ user: identity._id });
 
         if (!devices.length) return;
 
@@ -79,6 +79,19 @@ export class NotificationsService {
                 data: data.data,
             });
         }
+    }
+
+    async sendToAll(data: Omit<ISendNotificationData, 'receivers'>) {
+        const identities = await this.identitiesService.find(
+            {},
+            { populate: 'user' },
+        );
+
+        await Promise.allSettled(
+            identities.map((identity) =>
+                this.sendToIdentity(identity, data as ISendNotificationData),
+            ),
+        );
     }
 
     async create(data: Notification) {

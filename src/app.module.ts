@@ -29,6 +29,7 @@ import { AiPredictionsModule } from './modules/ai-predictions/ai-predictions.mod
 import { ChildrenModule } from './modules/children/children.module';
 import { VaccineModule } from './modules/vaccine/vaccine.module';
 import { BabyRoutineModule } from './modules/baby_routine/baby_routine.module';
+import { MattressesModule } from './modules/mattresses/mattresses.module';
 
 @Module({
     imports: [
@@ -46,6 +47,7 @@ import { BabyRoutineModule } from './modules/baby_routine/baby_routine.module';
         UserTokensModule,
         UsersModule,
         AuthModule,
+        MattressesModule,
         NodeMailerModule,
         AuthenticaModule,
         SharedModule,

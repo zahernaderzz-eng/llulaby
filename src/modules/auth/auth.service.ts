@@ -20,7 +20,6 @@ import { CountriesService } from '../countries/countries.service';
 import { ForgotPasswordDto } from './dto/forgot-password.dto';
 import { VerifyForgotPasswordDto } from './dto/verify-forgot-password.dto';
 import { ChangePasswordDto } from './dto/change-password.dto';
-import { Types } from 'mongoose';
 import { forwardRef } from '@nestjs/common';
 import { ChildrenService } from '../children/children.service';
 
