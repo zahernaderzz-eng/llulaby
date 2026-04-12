@@ -14,11 +14,10 @@ import { UserTokensModule } from '../user-tokens/user-tokens.module';
         FirebaseModule,
         DevicesModule,
         IdentitiesModule,
-        UserTokensModule
-
+        UserTokensModule,
     ],
     controllers: [NotificationsController],
     providers: [NotificationsService, NotificationSender],
     exports: [NotificationsService],
 })
-export class NotificationsModule { }
+export class NotificationsModule {}

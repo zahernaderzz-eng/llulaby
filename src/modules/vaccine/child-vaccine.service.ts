@@ -147,6 +147,8 @@ export class ChildVaccineService {
     }
 
     async deleteAllForChild(childId: string) {
-        await this.childVaccineModel.deleteMany({ child: new Types.ObjectId(childId) });
+        await this.childVaccineModel.deleteMany({
+            child: new Types.ObjectId(childId),
+        });
     }
 }

@@ -21,16 +21,16 @@ export class ChildVaccinesController {
         private readonly childVaccineService: ChildVaccineService,
         private readonly i18nService: I18nService,
         private readonly returnObject: ReturnObject,
-    ) { }
+    ) {}
 
     @UseGuards(AuthenticateGuardFactory())
     @Get('all')
     async all(
         @Req() request: any,
-        @Query('type') type: 'all' | 'done' | 'upcoming' | 'overdue' | 'missed' = 'all',
+        @Query('type')
+        type: 'all' | 'done' | 'upcoming' | 'overdue' | 'missed' = 'all',
     ) {
-        const userId = request['user']['id']
-
+        const userId = request['user']['id'];
 
         const data = await this.childVaccineService.getAllForChild(
             userId,
@@ -39,18 +39,21 @@ export class ChildVaccinesController {
         return ApiUtil.formatResponse(
             200,
             this.i18nService.t('messages.vaccinesFetched'),
-            { vaccines: data.map((v) => this.returnObject.childVaccineDetails(v)) },
+            {
+                vaccines: data.map((v) =>
+                    this.returnObject.childVaccineDetails(v),
+                ),
+            },
         );
     }
-
 
     @Patch('mark-taken')
     @UseGuards(AuthenticateGuardFactory())
     async markTaken(
         @Req() request: any,
-        @Body() dto: { vaccineId: string, isTaken: boolean },
+        @Body() dto: { vaccineId: string; isTaken: boolean },
     ) {
-        const userId = request['user']['id']
+        const userId = request['user']['id'];
         const data = await this.childVaccineService.markTaken(userId, dto);
         return ApiUtil.formatResponse(
             200,
@@ -58,6 +61,4 @@ export class ChildVaccinesController {
             { vaccine: this.returnObject.childVaccineDetails(data) },
         );
     }
-
-
 }

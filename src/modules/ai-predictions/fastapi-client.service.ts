@@ -5,10 +5,10 @@ const FormData = require('form-data');
 import * as fs from 'fs';
 
 export interface PredictionResult {
-    prediction: string;    // e.g. "belly_pain"
-    confidence?: number;    // e.g. 0.9999
+    prediction: string; // e.g. "belly_pain"
+    confidence?: number; // e.g. 0.9999
     all_probabilities?: Record<string, number>;
-    [key: string]: any;     // Allow for other dynamic fields from the model
+    [key: string]: any; // Allow for other dynamic fields from the model
 }
 
 @Injectable()
@@ -17,7 +17,9 @@ export class FastApiClientService {
     private readonly client: AxiosInstance;
 
     constructor(private configService: ConfigService) {
-        let aiServiceUrl = this.configService.get<string>('AI_SERVICE_URL') || 'http://63.179.148.169:8000';
+        let aiServiceUrl =
+            this.configService.get<string>('AI_SERVICE_URL') ||
+            'http://63.179.148.169:8000';
 
         // Strip trailing /predict if present to avoid duplication with the post path
         if (aiServiceUrl.endsWith('/predict')) {
@@ -29,7 +31,9 @@ export class FastApiClientService {
             timeout: 30000,
             headers: {
                 // Internal service auth — add if your FastAPI is protected
-                'X-Internal-Key': this.configService.get<string>('FASTAPI_INTERNAL_KEY') ?? '',
+                'X-Internal-Key':
+                    this.configService.get<string>('FASTAPI_INTERNAL_KEY') ??
+                    '',
             },
         });
     }
@@ -44,15 +48,11 @@ export class FastApiClientService {
 
         this.logger.log(`Sending to FastAPI: ${normalizedWavPath}`);
 
-        const response = await this.client.post<string>(
-            '/predict',
-            form,
-            {
-                headers: form.getHeaders(),
-                // Ensure response is treated as text for manual parsing
-                responseType: 'text'
-            },
-        );
+        const response = await this.client.post<string>('/predict', form, {
+            headers: form.getHeaders(),
+            // Ensure response is treated as text for manual parsing
+            responseType: 'text',
+        });
 
         let data = response.data;
         let result: PredictionResult;
@@ -76,9 +76,7 @@ export class FastApiClientService {
             result = { prediction: data.replace(/^"(.*)"$/, '$1') };
         }
 
-        this.logger.log(
-            `FastAPI response parsed: ${JSON.stringify(result)}`,
-        );
+        this.logger.log(`FastAPI response parsed: ${JSON.stringify(result)}`);
 
         return result;
     }

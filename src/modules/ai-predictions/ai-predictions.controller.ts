@@ -11,7 +11,6 @@ import {
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
-import * as os from 'os';
 import { AuthenticateGuardFactory } from '../auth/guards/authenticate.guard';
 import { AudioProcessorService } from './audio-processor.service';
 import { FastApiClientService } from './fastapi-client.service';
@@ -25,20 +24,25 @@ export class AiPredictionsController {
         private readonly audioProcessor: AudioProcessorService,
         private readonly fastApiClient: FastApiClientService,
         private readonly childrenService: ChildrenService,
-    ) { }
+    ) {}
 
     @UseGuards(AuthenticateGuardFactory())
     @Post('predict')
     @UseInterceptors(
         FileInterceptor('file', {
             storage: diskStorage({
-                destination: os.tmpdir(),
-                filename: (_req, _file, cb) => {
-                    cb(null, `upload_${Date.now()}.wav`);
+                destination: (req, file, cb) => {
+                    cb(
+                        null,
+                        process.env.AI_AUDIO_DEBUG_DIR || './uploads/ai-debug',
+                    );
+                },
+                filename: (req, file, cb) => {
+                    cb(null, `debug_${Date.now()}.wav`);
                 },
             }),
             limits: {
-                fileSize: 5 * 1024 * 1024, // 5MB max raw input
+                fileSize: 5 * 1024 * 1024,
             },
             fileFilter: (_req, file, cb) => {
                 const allowed = [
@@ -48,9 +52,11 @@ export class AiPredictionsController {
                     'audio/mpeg',
                     'audio/mp3',
                     'audio/mp4',
-                    'application/octet-stream', // Often used by mobile apps
+                    'application/octet-stream',
                 ];
+
                 const extension = file.originalname.toLowerCase();
+
                 if (
                     allowed.includes(file.mimetype) ||
                     extension.endsWith('.wav') ||
@@ -84,7 +90,7 @@ export class AiPredictionsController {
                 `Received audio: ${file.originalname} | ${file.size} bytes | user: ${userId}`,
             );
 
-            // ── Step 1: Validate duration ──────────────────
+            // ✅ Step 1: Validate
             const validation =
                 await this.audioProcessor.validateAudioFile(rawPath);
 
@@ -92,20 +98,18 @@ export class AiPredictionsController {
                 throw new BadRequestException(validation.error);
             }
 
-            this.logger.log(
-                `Audio duration: ${validation.durationSeconds.toFixed(2)}s`,
-            );
-
-            // ── Step 2: Normalize to 22050Hz mono WAV ──────
+            // ✅ Step 2: Normalize
             normalizedPath = await this.audioProcessor.normalizeAudio(rawPath);
 
-            // ── Step 3: Send normalized file to FastAPI ────
+            // ✅ Step 3: Predict
             const result = await this.fastApiClient.predict(normalizedPath);
 
-            // ── Step 4: Save to database ───────
-            // We need a string prediction and a number confidence for the DB record
-            const dbPrediction = result.prediction || result.predicted_label || 'unknown';
-            const dbConfidence = typeof result.confidence === 'number' ? result.confidence : 1.0;
+            // ✅ Step 4: Save to DB
+            const dbPrediction =
+                result.prediction || result.predicted_label || 'unknown';
+
+            const dbConfidence =
+                typeof result.confidence === 'number' ? result.confidence : 1.0;
 
             await this.childrenService.addPrediction(
                 userId,
@@ -113,24 +117,22 @@ export class AiPredictionsController {
                 dbConfidence,
             );
 
-            // Spread the result from AI model and ensure success: true
-            // If the model didn't return confidence, it won't be in the response
             return {
                 success: true,
-                ...result
+                ...result,
             };
         } catch (err: any) {
             this.logger.error(`Predict failed: ${err?.message}`);
 
-            // Re-throw NestJS HTTP exceptions as-is
             if (err?.status) throw err;
 
-            // FastAPI error — forward the detail message
             const detail = err?.response?.data?.detail ?? 'Prediction failed';
+
             throw new InternalServerErrorException(detail);
         } finally {
-            // Always clean up temp files
+            // 🧠 Smart cleanup (بيحترم KEEP_DEBUG_AUDIO)
             if (rawPath) this.audioProcessor.deleteTempFile(rawPath);
+
             if (normalizedPath)
                 this.audioProcessor.deleteTempFile(normalizedPath);
         }

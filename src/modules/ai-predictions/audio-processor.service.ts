@@ -1,4 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import * as fs from 'fs';
 import * as os from 'os';
 import * as path from 'path';
@@ -13,10 +14,43 @@ ffmpeg.setFfprobePath(ffprobeInstaller.path);
 @Injectable()
 export class AudioProcessorService {
     private readonly logger = new Logger(AudioProcessorService.name);
+    private readonly debugDir: string;
+    private readonly keepDebugAudio: boolean;
+
+    constructor(private configService: ConfigService) {
+        this.debugDir =
+            this.configService.get<string>('AI_AUDIO_DEBUG_DIR') ||
+            path.join(process.cwd(), 'uploads/ai-debug');
+
+        this.keepDebugAudio =
+            this.configService.get<string>('KEEP_DEBUG_AUDIO') === 'true';
+
+        this.ensureDebugDir();
+    }
+
+    private ensureDebugDir() {
+        if (!fs.existsSync(this.debugDir)) {
+            fs.mkdirSync(this.debugDir, { recursive: true });
+            this.logger.log(`Created debug dir: ${this.debugDir}`);
+        }
+    }
 
     /**
-     * Converts uploaded audio to 22050Hz mono WAV
-     * This is ALL NestJS does to the audio — Python handles the rest
+     * Get upload destination (for multer)
+     */
+    getUploadPath(): string {
+        return this.debugDir;
+    }
+
+    /**
+     * Generate debug filename
+     */
+    generateFileName(prefix = 'debug'): string {
+        return `${prefix}_${Date.now()}.wav`;
+    }
+
+    /**
+     * Normalize audio → 22050Hz mono WAV
      */
     async normalizeAudio(inputPath: string): Promise<string> {
         const outputPath = path.join(
@@ -26,15 +60,12 @@ export class AudioProcessorService {
 
         return new Promise((resolve, reject) => {
             ffmpeg(inputPath)
-                .audioFrequency(22050) // match model's SAMPLE_RATE exactly
-                .audioChannels(1) // mono
-                .audioCodec('pcm_s16le') // 16-bit PCM — standard WAV
+                .audioFrequency(22050)
+                .audioChannels(1)
+                .audioCodec('pcm_s16le')
                 .format('wav')
-                .on('start', (cmd: string) => {
-                    this.logger.debug(`ffmpeg started: ${cmd}`);
-                })
                 .on('end', () => {
-                    this.logger.log(`Normalized audio saved: ${outputPath}`);
+                    this.logger.log(`Normalized audio: ${outputPath}`);
                     resolve(outputPath);
                 })
                 .on('error', (err: any) => {
@@ -46,7 +77,7 @@ export class AudioProcessorService {
     }
 
     /**
-     * Validates audio file before sending to Python
+     * Validate duration
      */
     async validateAudioFile(filePath: string): Promise<{
         isValid: boolean;
@@ -70,7 +101,7 @@ export class AudioProcessorService {
                     resolve({
                         isValid: false,
                         durationSeconds: duration,
-                        error: 'Audio too short — minimum 1 second',
+                        error: 'Audio too short',
                     });
                     return;
                 }
@@ -79,7 +110,7 @@ export class AudioProcessorService {
                     resolve({
                         isValid: false,
                         durationSeconds: duration,
-                        error: 'Audio too long — maximum 15 seconds',
+                        error: 'Audio too long',
                     });
                     return;
                 }
@@ -89,11 +120,22 @@ export class AudioProcessorService {
         });
     }
 
+    /**
+     * Delete temp files safely
+     */
     deleteTempFile(filePath: string): void {
         if (!filePath) return;
+
+        // لو ده debug file ومفعل الاحتفاظ → متحذفوش
+        if (this.keepDebugAudio && filePath.startsWith(this.debugDir)) {
+            this.logger.debug(`Keeping debug file: ${filePath}`);
+            return;
+        }
+
         fs.unlink(filePath, (err) => {
-            if (err)
-                this.logger.warn(`Could not delete temp file: ${filePath}`);
+            if (err) {
+                this.logger.warn(`Failed to delete: ${filePath}`);
+            }
         });
     }
 }

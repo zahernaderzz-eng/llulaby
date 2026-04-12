@@ -106,7 +106,9 @@ export class ChildrenService {
             if (child.avatar) {
                 await ImageUtil.removeAvatar('children', child.avatar);
             }
-            await this.childVaccineService.deleteAllForChild((child as any)._id.toString());
+            await this.childVaccineService.deleteAllForChild(
+                (child as any)._id.toString(),
+            );
         }
         await this.childModel.deleteMany({ identity: identityId });
     }
