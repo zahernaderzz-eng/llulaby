@@ -7,7 +7,7 @@ import * as fs from 'fs';
 export interface PredictionResult {
     prediction: string; // e.g. "belly_pain"
     confidence?: number; // e.g. 0.9999
-    all_probabilities?: Record<string, number>;
+    probabilities?: Record<string, number>;
     [key: string]: any; // Allow for other dynamic fields from the model
 }
 
@@ -76,7 +76,28 @@ export class FastApiClientService {
             result = { prediction: data.replace(/^"(.*)"$/, '$1') };
         }
 
-        this.logger.log(`FastAPI response parsed: ${JSON.stringify(result)}`);
+        this.logger.log(
+            `FastAPI response parsed (raw): ${JSON.stringify(result)}`,
+        );
+
+        // ✅ normalize confidence (0-100 → 0-1)
+        if (typeof result.confidence === 'number') {
+            result.confidence = result.confidence / 100;
+        }
+
+        // ✅ normalize probabilities (0-100 → 0-1)
+        if (result.probabilities && typeof result.probabilities === 'object') {
+            result.probabilities = Object.fromEntries(
+                Object.entries(result.probabilities).map(([key, value]) => [
+                    key,
+                    typeof value === 'number' ? value / 100 : value,
+                ]),
+            );
+        }
+
+        this.logger.log(
+            `FastAPI response normalized: ${JSON.stringify(result)}`,
+        );
 
         return result;
     }
