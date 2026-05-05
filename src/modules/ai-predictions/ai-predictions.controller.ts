@@ -34,15 +34,17 @@ export class AiPredictionsController {
                 destination: (req, file, cb) => {
                     cb(
                         null,
-                        process.env.AI_AUDIO_DEBUG_DIR || './uploads/ai-debug',
+                        process.env.AI_AUDIO_UPLOAD_DIR ||
+                            './uploads/ai-audio',
                     );
                 },
                 filename: (req, file, cb) => {
-                    cb(null, `debug_${Date.now()}.wav`);
+                    const ext = file.originalname.split('.').pop();
+                    cb(null, `audio_${Date.now()}.${ext}`);
                 },
             }),
             limits: {
-                fileSize: 5 * 1024 * 1024,
+                fileSize: 10 * 1024 * 1024, // 10MB
             },
             fileFilter: (_req, file, cb) => {
                 const allowed = [
@@ -52,6 +54,8 @@ export class AiPredictionsController {
                     'audio/mpeg',
                     'audio/mp3',
                     'audio/mp4',
+                    'audio/m4a',
+                    'audio/aac',
                     'application/octet-stream',
                 ];
 
@@ -68,7 +72,7 @@ export class AiPredictionsController {
                 } else {
                     cb(
                         new BadRequestException(
-                            `Audio files only (.wav, .mp3, .m4a). Received: ${file.mimetype}`,
+                            `Audio files only. Received: ${file.mimetype}`,
                         ),
                         false,
                     );
@@ -82,29 +86,17 @@ export class AiPredictionsController {
         }
 
         const userId = req['user']['id'];
-        const rawPath = file.path;
-        let normalizedPath: string | null = null;
+        const filePath = file.path;
 
         try {
             this.logger.log(
                 `Received audio: ${file.originalname} | ${file.size} bytes | user: ${userId}`,
             );
 
-            // ✅ Step 1: Validate
-            const validation =
-                await this.audioProcessor.validateAudioFile(rawPath);
+            // Send directly to FastAPI
+            const result = await this.fastApiClient.predict(filePath);
 
-            if (!validation.isValid) {
-                throw new BadRequestException(validation.error);
-            }
-
-            // ✅ Step 2: Normalize
-            normalizedPath = await this.audioProcessor.normalizeAudio(rawPath);
-
-            // ✅ Step 3: Predict
-            const result = await this.fastApiClient.predict(normalizedPath);
-
-            // ✅ Step 4: Save to DB
+            // Save to DB
             const dbPrediction =
                 result.prediction || result.predicted_label || 'unknown';
 
@@ -130,11 +122,10 @@ export class AiPredictionsController {
 
             throw new InternalServerErrorException(detail);
         } finally {
-            // 🧠 Smart cleanup (بيحترم KEEP_DEBUG_AUDIO)
-            if (rawPath) this.audioProcessor.deleteTempFile(rawPath);
-
-            if (normalizedPath)
-                this.audioProcessor.deleteTempFile(normalizedPath);
+            // Cleanup temp file
+            if (filePath) {
+                this.audioProcessor.deleteTempFile(filePath);
+            }
         }
     }
 }

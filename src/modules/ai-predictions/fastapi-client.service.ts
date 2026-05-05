@@ -38,67 +38,28 @@ export class FastApiClientService {
         });
     }
 
-    async predict(normalizedWavPath: string): Promise<PredictionResult> {
+    async predict(audioFilePath: string): Promise<PredictionResult> {
         const form = new FormData();
 
-        form.append('file', fs.createReadStream(normalizedWavPath), {
-            filename: 'cry.wav',
+        form.append('file', fs.createReadStream(audioFilePath), {
+            filename: 'audio.wav',
             contentType: 'audio/wav',
         });
 
-        this.logger.log(`Sending to FastAPI: ${normalizedWavPath}`);
+        this.logger.log(`Sending to FastAPI: ${audioFilePath}`);
 
-        const response = await this.client.post<string>('/predict', form, {
-            headers: form.getHeaders(),
-            // Ensure response is treated as text for manual parsing
-            responseType: 'text',
-        });
-
-        let data = response.data;
-        let result: PredictionResult;
-
-        try {
-            // Check if it's a JSON string
-            const parsed = JSON.parse(data);
-
-            if (typeof parsed === 'object' && parsed !== null) {
-                result = parsed as PredictionResult;
-                // Ensure prediction field exists or use predicted_label
-                if (!result.prediction && result.predicted_label) {
-                    result.prediction = result.predicted_label;
-                }
-            } else {
-                // It's a quoted string from JSON.parse
-                result = { prediction: String(parsed) };
-            }
-        } catch (e) {
-            // Not JSON, use raw string
-            result = { prediction: data.replace(/^"(.*)"$/, '$1') };
-        }
-
-        this.logger.log(
-            `FastAPI response parsed (raw): ${JSON.stringify(result)}`,
+        const response = await this.client.post<PredictionResult>(
+            '/predict',
+            form,
+            {
+                headers: form.getHeaders(),
+            },
         );
 
-        // ✅ normalize confidence (0-100 → 0-1)
-        if (typeof result.confidence === 'number') {
-            result.confidence = result.confidence / 100;
-        }
-
-        // ✅ normalize probabilities (0-100 → 0-1)
-        if (result.probabilities && typeof result.probabilities === 'object') {
-            result.probabilities = Object.fromEntries(
-                Object.entries(result.probabilities).map(([key, value]) => [
-                    key,
-                    typeof value === 'number' ? value / 100 : value,
-                ]),
-            );
-        }
-
         this.logger.log(
-            `FastAPI response normalized: ${JSON.stringify(result)}`,
+            `FastAPI response: ${JSON.stringify(response.data)}`,
         );
 
-        return result;
+        return response.data;
     }
 }
