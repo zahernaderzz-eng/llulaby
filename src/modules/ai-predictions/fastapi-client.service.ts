@@ -60,6 +60,27 @@ export class FastApiClientService {
             `FastAPI response: ${JSON.stringify(response.data)}`,
         );
 
-        return response.data;
+        const result = response.data;
+
+        // Convert confidence from 0-100 to 0-1
+        if (typeof result.confidence === 'number') {
+            result.confidence = result.confidence / 100;
+        }
+
+        // Convert probabilities from 0-100 to 0-1
+        if (result.probabilities && typeof result.probabilities === 'object') {
+            result.probabilities = Object.fromEntries(
+                Object.entries(result.probabilities).map(([key, value]) => [
+                    key,
+                    typeof value === 'number' ? value / 100 : value,
+                ]),
+            );
+        }
+
+        this.logger.log(
+            `FastAPI response normalized: ${JSON.stringify(result)}`,
+        );
+
+        return result;
     }
 }
