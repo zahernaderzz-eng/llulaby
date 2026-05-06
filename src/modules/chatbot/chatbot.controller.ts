@@ -12,6 +12,7 @@ import {
 import { AuthenticateGuardFactory } from '../auth/guards/authenticate.guard';
 import { ChatbotClientService } from './chatbot-client.service';
 import { AskQuestionDto } from './dto/ask-question.dto';
+import { detectLanguage } from '../../common/utils/language-detector.util';
 
 @Controller('chatbot')
 export class ChatbotController {
@@ -27,12 +28,20 @@ export class ChatbotController {
         }
 
         const userId = req['user']['id'];
+        const question = dto.question.trim();
+
+        // Auto-detect language if not provided
+        const language = dto.language || detectLanguage(question);
+
+        this.logger.log(
+            `Question language detected: ${language} | user: ${userId}`,
+        );
 
         try {
             const result = await this.chatbotClient.ask({
-                question: dto.question.trim(),
+                question,
                 age: dto.age,
-                language: dto.language || 'en',
+                language,
                 session_id: userId,
             });
 
@@ -40,6 +49,7 @@ export class ChatbotController {
                 success: true,
                 answer: result.answer,
                 session_id: result.session_id,
+                language, // Return detected language
             };
         } catch (err: any) {
             this.logger.error(`Chatbot ask failed: ${err?.message}`);
