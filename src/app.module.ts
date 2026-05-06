@@ -30,6 +30,7 @@ import { ChildrenModule } from './modules/children/children.module';
 import { VaccineModule } from './modules/vaccine/vaccine.module';
 import { BabyRoutineModule } from './modules/baby_routine/baby_routine.module';
 import { MattressesModule } from './modules/mattresses/mattresses.module';
+import { ChatbotModule } from './modules/chatbot/chatbot.module';
 
 @Module({
     imports: [
@@ -61,6 +62,7 @@ import { MattressesModule } from './modules/mattresses/mattresses.module';
         ChildrenModule,
         VaccineModule,
         BabyRoutineModule,
+        ChatbotModule,
     ],
     controllers: [],
     providers: [

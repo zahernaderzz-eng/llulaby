@@ -56,9 +56,7 @@ export class FastApiClientService {
             },
         );
 
-        this.logger.log(
-            `FastAPI response: ${JSON.stringify(response.data)}`,
-        );
+        this.logger.log(`FastAPI response: ${JSON.stringify(response.data)}`);
 
         const result = response.data;
 
