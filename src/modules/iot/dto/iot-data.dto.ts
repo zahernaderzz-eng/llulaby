@@ -19,7 +19,7 @@ export class IoTDataDto {
     spo2: number;
 
     @IsNumber()
-    @Min(30)
+    @Min(0)
     @Max(45)
     temperature: number;
 
