@@ -1,4 +1,4 @@
-import { Injectable, Logger, NotFoundException } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { IoTReading, IoTReadingDocument } from './entities/iot-reading.entity';
@@ -27,10 +27,10 @@ export class IoTService {
             // Use provided childId
             childId = data.childId;
         } else {
-            // Get first child for this user
-            const children = await this.childrenService.findAll(userId);
-            if (children && children.length > 0) {
-                childId = children[0]._id.toString();
+            // Get child for this user
+            const child = await this.childrenService.findOne(userId);
+            if (child) {
+                childId = (child as any)._id.toString();
             }
         }
 
