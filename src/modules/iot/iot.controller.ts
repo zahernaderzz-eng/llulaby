@@ -7,10 +7,11 @@ import {
     HttpStatus,
     Logger,
     BadRequestException,
+    Req,
 } from '@nestjs/common';
 import { IoTService } from './iot.service';
 import { IoTDataDto } from './dto/iot-data.dto';
-import { ApiKeyGuard } from './guards/api-key.guard';
+import { AuthenticateGuardFactory } from '../auth/guards/authenticate.guard';
 
 @Controller('iot')
 export class IoTController {
@@ -18,16 +19,18 @@ export class IoTController {
 
     constructor(private readonly iotService: IoTService) {}
 
-    @UseGuards(ApiKeyGuard)
+    @UseGuards(AuthenticateGuardFactory())
     @Post('data')
     @HttpCode(HttpStatus.OK)
-    async receiveData(@Body() data: IoTDataDto) {
+    async receiveData(@Body() data: IoTDataDto, @Req() req: any) {
         try {
+            const userId = req['user']['id'];
+
             this.logger.log(
-                `Received IoT data from device: ${data.deviceId}`,
+                `Received IoT data from device: ${data.deviceId} | user: ${userId}`,
             );
 
-            await this.iotService.saveReading(data);
+            await this.iotService.saveReading(data, userId);
 
             return {
                 status: 200,

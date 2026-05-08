@@ -4,6 +4,10 @@ export class IoTDataDto {
     @IsString()
     deviceId: string;
 
+    @IsOptional()
+    @IsString()
+    childId?: string; // Optional: if user has multiple children
+
     @IsNumber()
     @Min(0)
     @Max(300)
