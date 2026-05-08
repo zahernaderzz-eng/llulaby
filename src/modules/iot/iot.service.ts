@@ -46,7 +46,7 @@ export class IoTService {
         await reading.save();
 
         this.logger.log(
-            `IoT reading saved: ${reading._id} | child: ${childId || 'none'}`,
+            `IoT reading saved: ${(reading as any)._id} | child: ${childId || 'none'}`,
         );
 
         return reading;
