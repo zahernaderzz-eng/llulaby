@@ -17,37 +17,43 @@ export class IoTService {
 
     async saveReading(data: IoTDataDto, userId: string): Promise<IoTReading> {
         this.logger.log(
-            `Saving IoT reading from device: ${data.deviceId} | user: ${userId} | HR: ${data.heartRate} | SpO2: ${data.spo2} | Temp: ${data.temperature}`,
+            `Saving IoT reading from device: ${data.deviceId} | user: ${userId}`,
         );
 
-        // Get child ID
         let childId: string | undefined;
 
         if (data.childId) {
-            // Use provided childId
             childId = data.childId;
         } else {
-            // Get child for this user
             const child = await this.childrenService.findOne(userId);
+
             if (child) {
                 childId = (child as any)._id.toString();
             }
         }
 
-        const reading = new this.iotReadingModel({
-            deviceId: data.deviceId,
-            child: childId,
-            heartRate: data.heartRate,
-            spo2: data.spo2,
-            temperature: data.temperature,
-            timestamp: data.timestamp ? new Date(data.timestamp) : new Date(),
-        });
-
-        await reading.save();
-
-        this.logger.log(
-            `IoT reading saved: ${(reading as any)._id} | child: ${childId || 'none'}`,
+        const reading = await this.iotReadingModel.findOneAndUpdate(
+            {
+                child: childId,
+                deviceId: data.deviceId,
+            }, // condition
+            {
+                $set: {
+                    heartRate: data.heartRate,
+                    spo2: data.spo2,
+                    temperature: data.temperature,
+                    timestamp: data.timestamp
+                        ? new Date(data.timestamp)
+                        : new Date(),
+                },
+            },
+            {
+                new: true,
+                upsert: true,
+            },
         );
+
+        this.logger.log(`IoT reading upserted: ${(reading as any)._id}`);
 
         return reading;
     }

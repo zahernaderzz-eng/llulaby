@@ -34,8 +34,7 @@ export class AiPredictionsController {
                 destination: (req, file, cb) => {
                     cb(
                         null,
-                        process.env.AI_AUDIO_UPLOAD_DIR ||
-                            './uploads/ai-audio',
+                        process.env.AI_AUDIO_UPLOAD_DIR || './uploads/ai-audio',
                     );
                 },
                 filename: (req, file, cb) => {
