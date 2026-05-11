@@ -6,6 +6,7 @@ import { IoTReading, IoTReadingSchema } from './entities/iot-reading.entity';
 import { IdentitiesModule } from '../identities/identities.module';
 import { UserTokensModule } from '../user-tokens/user-tokens.module';
 import { ChildrenModule } from '../children/children.module';
+import { SocketIoModule } from '../../core/socket-io/socket-io.module';
 
 @Module({
     imports: [
@@ -15,6 +16,7 @@ import { ChildrenModule } from '../children/children.module';
         IdentitiesModule,
         UserTokensModule,
         ChildrenModule,
+        SocketIoModule,
     ],
     controllers: [IoTController],
     providers: [IoTService],

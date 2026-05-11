@@ -1,0 +1,49 @@
+### Test IoT Data Endpoint - Real-time Test
+POST http://localhost:3000/iot/data
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5YjM4MDljNDc2ZTAxZTczOGFkNWZjYSIsInVzZXJUeXBlIjoidXNlciIsImlhdCI6MTc3Njc2NjY4OX0.AQmjJNAwMuFhZw6gxonCbUZVRyNzWxjYvfB8rvW15lQ
+
+{
+  "deviceId": "esp32_1",
+  "heartRate": 85,
+  "spo2": 98,
+  "temperature": 37.2
+}
+
+### Test 2 - Different values
+POST http://localhost:3000/iot/data
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5YjM4MDljNDc2ZTAxZTczOGFkNWZjYSIsInVzZXJUeXBlIjoidXNlciIsImlhdCI6MTc3Njc2NjY4OX0.AQmjJNAwMuFhZw6gxonCbUZVRyNzWxjYvfB8rvW15lQ
+
+{
+  "deviceId": "esp32_1",
+  "heartRate": 92,
+  "spo2": 95,
+  "temperature": 36.8
+}
+
+### Test 3 - High heart rate
+POST http://localhost:3000/iot/data
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5YjM4MDljNDc2ZTAxZTczOGFkNWZjYSIsInVzZXJUeXBlIjoidXNlciIsImlhdCI6MTc3Njc2NjY4OX0.AQmjJNAwMuFhZw6gxonCbUZVRyNzWxjYvfB8rvW15lQ
+
+{
+  "deviceId": "esp32_1",
+  "heartRate": 120,
+  "spo2: 97,
+  "temperature": 37.5
+}
+
+### Test with childId
+POST http://localhost:3000/iot/data
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5YjM4MDljNDc2ZTAxZTczOGFkNWZjYSIsInVzZXJUeXBlIjoidXNlciIsImlhdCI6MTc3Njc2NjY4OX0.AQmjJNAwMuFhZw6gxonCbUZVRyNzWxjYvfB8rvW15lQ
+
+{
+  "deviceId": "esp32_1",
+  "childId": "69b981b3c84efb801a4b84f6",
+  "heartRate": 80,
+  "spo2": 97,
+  "temperature": 36.8,
+  "timestamp": 1776766689000
+}
