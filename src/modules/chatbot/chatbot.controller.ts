@@ -64,7 +64,7 @@ export class ChatbotController {
     }
 
     @UseGuards(AuthenticateGuardFactory())
-    @Delete('memory')
+    @Post('memory')
     async clearMemory(@Req() req: any) {
         const userId = req['user']['id'];
 

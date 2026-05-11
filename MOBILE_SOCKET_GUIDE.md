@@ -206,19 +206,40 @@ ip addr show
 
 ## 🐛 حل المشاكل
 
+### `invalid token` أو `jwt malformed`
+**السبب:** Token غلط أو مش بالصيغة الصحيحة
+
+**الحل:**
+```javascript
+// تأكد إن Token كامل (3 أجزاء مفصولة بـ .)
+const token = await AsyncStorage.getItem('authToken');
+console.log('Token:', token);
+
+// لازم يكون شكله كده:
+// eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Ij...xyz.Sig...123
+```
+
+### `No token provided`
+**السبب:** Token مش بيتبعت في الـ URL
+
+**الحل:**
+```javascript
+// ✅ صح
+const socket = io(`http://IP:3000?token=${token}`);
+
+// ❌ غلط
+const socket = io('http://IP:3000');
+```
+
 ### `Network request failed`
 - تأكد إن الموبايل والسيرفر على نفس الشبكة
 - تأكد من IP صحيح
 - تأكد من Port 3000 مفتوح
 
-### `Socket auth failed`
-- تأكد من Token صحيح
-- تأكد من Token موجود في database
-
 ### البيانات مش بتوصل
 - تأكد من الاتصال نجح (`isConnected = true`)
 - شوف logs في Metro bundler
-- تأكد من وجود بيانات في database
+- **مهم:** استخدم Socket.IO بس، مش HTTP requests
 
 ---
 
@@ -253,10 +274,18 @@ const SERVER_URL = __DEV__
 ## 📝 ملخص سريع
 
 1. **ثبت:** `npx expo install socket.io-client`
-2. **اتصل:** `io('http://IP:3000?token=YOUR_TOKEN')`
-3. **استقبل:** `socket.on('sensor-data', callback)`
-4. **اطلب:** `socket.emit('get-latest-sensor-data')`
-5. **نظف:** `socket.disconnect()`
+2. **جيب Token:** `const token = await AsyncStorage.getItem('authToken')`
+3. **اتصل:** `io('http://IP:3000?token=' + token)`
+4. **استقبل:** `socket.on('sensor-data', callback)`
+5. **اطلب:** `socket.emit('get-latest-sensor-data')`
+6. **نظف:** `socket.disconnect()`
+
+## ⚠️ ملاحظات مهمة
+
+1. **Token لازم يكون JWT صحيح** (3 أجزاء مفصولة بـ `.`)
+2. **Token لازم يتبعت في الـ URL** (`?token=...`)
+3. **استخدم Socket.IO بس** - مش HTTP requests
+4. **مفيش endpoint اسمه** `/api/babies/.../sensors/latest`
 
 ---
 
