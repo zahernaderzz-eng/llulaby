@@ -1,7 +1,6 @@
 import {
     IsEmail,
     IsEnum,
-    IsMongoId,
     IsNotEmpty,
     IsOptional,
     IsString,

@@ -29,6 +29,7 @@ import { VaccineModule } from './modules/vaccine/vaccine.module';
 import { BabyRoutineModule } from './modules/baby_routine/baby_routine.module';
 import { ChatbotModule } from './modules/chatbot/chatbot.module';
 import { IoTModule } from './modules/iot/iot.module';
+import { RecommendationModule } from './recommendation/recommendation.module';
 
 @Module({
     imports: [
@@ -59,6 +60,7 @@ import { IoTModule } from './modules/iot/iot.module';
         BabyRoutineModule,
         ChatbotModule,
         IoTModule,
+        RecommendationModule,
     ],
     controllers: [],
     providers: [
