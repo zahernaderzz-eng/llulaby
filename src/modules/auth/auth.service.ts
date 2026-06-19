@@ -108,8 +108,6 @@ export class AuthService {
 
             void this.authHelper.sendOtpWithIdentifier(data.email, otp);
 
-            await user.populate({ path: 'country' });
-
             return { token, userObj: this.returnObject.user(user, identity) };
         } catch (err) {
             if (user) await this.usersService.deleteById(user.id);
@@ -189,7 +187,7 @@ export class AuthService {
         const identity = await this.identitiesService.findOne(
             { [type!]: data.identifier, status: 'active' },
             {
-                populate: { path: 'user', populate: { path: 'country' } },
+                populate: { path: 'user' },
                 lean: false,
             },
         );

@@ -39,11 +39,6 @@ export class SignupDto {
     @IsNotEmpty({ message: 'messages.passwordConfirmRequired' })
     passwordConfirm: string;
 
-    @IsMongoId({ message: 'messages.invalidCountry' })
-    @IsNotEmpty({ message: 'messages.countryRequired' })
-    @IsOptional()
-    country: string;
-
     @IsString({ message: 'messages.invalidFcmToken' })
     @IsNotEmpty({ message: 'messages.fcmTokenRequired' })
     @IsOptional()
