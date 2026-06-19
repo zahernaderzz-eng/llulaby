@@ -1,5 +1,4 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Country } from 'src/modules/countries/entities/country.entity';
 import { Schema as MongooseSchema, Document } from 'mongoose';
 import { Identity } from 'src/modules/identities/entities/identity.entity';
 
@@ -21,9 +20,6 @@ export class User {
 
     @Prop({ default: '' })
     avatar: string;
-
-    @Prop({ type: MongooseSchema.Types.ObjectId, ref: Country.name })
-    country: string | Country;
 
     @Prop()
     bio: string;

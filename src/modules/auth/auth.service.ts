@@ -16,7 +16,6 @@ import { IdentityDocument } from '../identities/entities/identity.entity';
 import { UsersService } from '../users/users.service';
 import type { RedisClientType } from 'redis';
 import { UserDocument } from '../users/entities/user.entity';
-import { CountriesService } from '../countries/countries.service';
 import { ForgotPasswordDto } from './dto/forgot-password.dto';
 import { VerifyForgotPasswordDto } from './dto/verify-forgot-password.dto';
 import { ChangePasswordDto } from './dto/change-password.dto';
@@ -31,7 +30,6 @@ export class AuthService {
         private readonly returnObject: ReturnObject,
         private readonly usersService: UsersService,
         private readonly i18nService: I18nService,
-        private readonly countriesService: CountriesService,
         @Inject(forwardRef(() => ChildrenService))
         private readonly childrenService: ChildrenService,
         @Inject('REDIS_CLIENT') private readonly redisClient: RedisClientType,
@@ -58,18 +56,6 @@ export class AuthService {
                     this.i18nService.t('messages.duplicatePhone'),
                     400,
                 );
-
-            if (data.country) {
-                const countryExists = await this.countriesService.findById(
-                    data.country,
-                    { lean: true },
-                );
-                if (!countryExists)
-                    throw new AppException(
-                        this.i18nService.t('messages.invalidCountry'),
-                        400,
-                    );
-            }
 
             const otp = OtpUtil.generateOtp();
             const otpExpireAt = new Date(Date.now() + 10 * 60 * 1000);
@@ -102,7 +88,6 @@ export class AuthService {
                 identity: identity.id,
                 name: data.name,
                 avatar: avatarFilename || '',
-                country: data.country,
                 bio: '',
                 isNotify: true,
                 notificationsCount: 0,

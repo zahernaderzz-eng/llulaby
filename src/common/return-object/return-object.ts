@@ -1,6 +1,5 @@
 import { SharedVariables } from '../shared-variables/shared-variables';
 import { Injectable } from '@nestjs/common';
-import { CountryDocument } from 'src/modules/countries/entities/country.entity';
 
 @Injectable()
 export class ReturnObject {
@@ -45,9 +44,6 @@ export class ReturnObject {
             email: identity.email,
             phone: identity.phone,
             avatar: this.getUserAvatar(user.avatar),
-            country: user.country
-                ? this.country(user.country as CountryDocument)
-                : null,
         };
     }
 
@@ -64,9 +60,6 @@ export class ReturnObject {
             id: identity._id,
             name: user.name,
             avatar: this.getUserAvatar(user.avatar),
-            country: user.country
-                ? this.country(user.country as CountryDocument)
-                : null,
             bio: user.bio || '',
             notificationsCount: user.notificationsCount,
         };

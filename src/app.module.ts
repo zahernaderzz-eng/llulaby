@@ -6,7 +6,6 @@ import { databaseRootModule } from './core/database/database-root.module';
 import { UsersModule } from './modules/users/users.module';
 import { RolesModule } from './modules/roles/roles.module';
 import { AdminsModule } from './modules/admins/admins.module';
-import { CountriesModule } from './modules/countries/countries.module';
 import { DevicesModule } from './modules/devices/devices.module';
 import { SettingsModule } from './modules/settings/settings.module';
 import { UserTokensModule } from './modules/user-tokens/user-tokens.module';
@@ -22,14 +21,12 @@ import { NotificationsModule } from './modules/notifications/notifications.modul
 import { IdentitiesModule } from './modules/identities/identities.module';
 import { SocketIoModule } from './core/socket-io/socket-io.module';
 import { CronModule } from './core/cron/cron.module';
-import { DashboardModule } from './modules/dashboard/dashboard.module';
 import { FirebaseModule } from './core/firebase/firebase.module';
 import { RequestLoggerMiddleware } from './common/middlewares/request-logger.middleware';
 import { AiPredictionsModule } from './modules/ai-predictions/ai-predictions.module';
 import { ChildrenModule } from './modules/children/children.module';
 import { VaccineModule } from './modules/vaccine/vaccine.module';
 import { BabyRoutineModule } from './modules/baby_routine/baby_routine.module';
-import { MattressesModule } from './modules/mattresses/mattresses.module';
 import { ChatbotModule } from './modules/chatbot/chatbot.module';
 import { IoTModule } from './modules/iot/iot.module';
 
@@ -42,14 +39,12 @@ import { IoTModule } from './modules/iot/iot.module';
         CacheModule,
         IdentitiesModule,
         AdminsModule,
-        CountriesModule,
         DevicesModule,
         RolesModule,
         SettingsModule,
         UserTokensModule,
         UsersModule,
         AuthModule,
-        MattressesModule,
         NodeMailerModule,
         AuthenticaModule,
         SharedModule,
@@ -57,7 +52,6 @@ import { IoTModule } from './modules/iot/iot.module';
         NotificationsModule,
         SocketIoModule,
         CronModule,
-        DashboardModule,
         FirebaseModule,
         AiPredictionsModule,
         ChildrenModule,

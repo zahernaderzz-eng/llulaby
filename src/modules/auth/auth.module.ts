@@ -2,7 +2,6 @@ import { forwardRef, Module } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
 import { AuthHelper } from './helpers/auth.helper';
-import { CountriesModule } from '../countries/countries.module';
 import { DevicesModule } from '../devices/devices.module';
 import { UserTokensModule } from '../user-tokens/user-tokens.module';
 import { AuthenticaModule } from 'src/services/authentica/authentica.module';
@@ -16,7 +15,6 @@ import { ChildrenModule } from '../children/children.module';
     imports: [
         IdentitiesModule,
         forwardRef(() => UsersModule),
-        CountriesModule,
         DevicesModule,
         UserTokensModule,
         AuthenticaModule,

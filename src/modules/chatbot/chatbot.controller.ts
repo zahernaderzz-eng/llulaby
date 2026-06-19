@@ -1,7 +1,6 @@
 import {
     Controller,
     Post,
-    Delete,
     Body,
     UseGuards,
     Req,

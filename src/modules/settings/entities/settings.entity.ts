@@ -8,7 +8,7 @@ import { Document } from 'mongoose';
 })
 export class Settings {
     @Prop()
-    appName: string;
+    appName?: string;
 }
 
 export type SettingsDocument = Settings & Document;

@@ -2,7 +2,7 @@ import { IsString, IsOptional, IsInt, Min, IsIn } from 'class-validator';
 
 export class AskQuestionDto {
     @IsString()
-    question: string;
+    question?: string;
 
     @IsOptional()
     @IsInt()
